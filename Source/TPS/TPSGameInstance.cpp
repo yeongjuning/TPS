@@ -2,11 +2,24 @@
 
 
 #include "TPSGameInstance.h"
+#include "WeaponBase.h"
 
 UTPSGameInstance::UTPSGameInstance()
 {
-	// 게임의 정보들
-	// 무기테이블등을 멤버 변수로 둬주기
+}
+
+// Table 가져오기
+UDataTable* UTPSGameInstance::GetWeaponTable()
+{
+	DT_Weapon = LoadObject<UDataTable>(nullptr, TEXT("DataTable'/Game/TPS/DataTables/WeaponDataTable.WeaponDataTable'"));
+
+	if (DT_Weapon == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("무기 테이블 참조를 찾을 수 없습니다."));
+		return nullptr;
+	}
+
+	return DT_Weapon;
 }
 
 // RandomKey생성
@@ -21,12 +34,12 @@ EWeaponKind UTPSGameInstance::CreateRandomKey()
 	return NewKeyValue;
 }
 
-// TODO :: RowName을 통해서 얻은 키값을 토대로 GameMode에서 Asset을 Load 해주기
-EWeaponKind UTPSGameInstance::GetTableKeys(FName RowName)
+// EWeaponKind를 WeaponKey로 가져옴 -> 
+EWeaponKind UTPSGameInstance::GetTableKey(FName RowName)
 {
 	EWeaponKind KeyValue = CreateRandomKey();
 
-	for (TMap<EWeaponKind, FName>::TIterator It = TableKeys.CreateIterator(); It; ++It)
+	for (TMap<EWeaponKind, FName>::TIterator It = WeaponTableMap.CreateIterator(); It; ++It)
 	{
 		KeyValue = It->Key;
 		RowName = It->Value;
@@ -35,9 +48,3 @@ EWeaponKind UTPSGameInstance::GetTableKeys(FName RowName)
 	return KeyValue;
 }
 
-
-
-void UTPSGameInstance::SetWeaponPreset(EWeaponKind WeapTableKey)
-{
-	UClass* WeaponBaseClass = WeaponPreset->WeaponAsset.LoadSynchronous();
-}

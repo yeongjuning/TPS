@@ -8,6 +8,7 @@
 
 #include "WeaponBase.generated.h"
 
+class UTPSGameInstance;
 class AAmmoInventory;
 
 UENUM(BlueprintType)
@@ -28,8 +29,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EWeaponKind WeaponKind;
 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//FText DisplayName = FText::GetEmpty();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText DisplayName = FText::GetEmpty();
+	FName DisplayName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSoftClassPtr<AWeaponBase> WeaponAsset = nullptr;
@@ -54,15 +58,12 @@ public:
 	AWeaponBase();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UDataTable* DT_Weapon;
+	UDataTable* WeaponTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	AAmmoInventory* AmmoInven;
 
 public:
-
-	UFUNCTION(BlueprintCallable)
-	UDataTable* GetWeaponTable();
 
 	UFUNCTION(BlueprintCallable)
 	uint8 GetRowNumber();
@@ -71,9 +72,12 @@ public:
 	FName GetWeaponName();
 
 	UFUNCTION(BlueprintCallable)
-	FWeaponPreset GetWapPreset();
+	void SetWeaponPreset();
 
-public:
+	UFUNCTION(BlueprintCallable)
+	UClass* GetWeaponClass();
+
+protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Data")
 	TArray<FName> RowNames;
@@ -84,8 +88,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Table Key")
 	int32 TableIdx;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DisPlay Weapon Number")
-	int32 WeaponNumber;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Class")
+	UClass* WeaponClass;
 
 public:	
 	// Called every frame
@@ -105,6 +109,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool IsAmmoEmpty() const { return bIsAmmoEmpty; }
 
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE UTPSGameInstance* GetTPSGameInstance() const { return TPSGameInstance; }
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintGetter = GetAmmo, Category = "Ammo Info")
@@ -120,7 +127,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	FWeaponPreset* WeaponData;
+	FWeaponPreset* WeaponPreset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTPSGameInstance* TPSGameInstance;
 
 private:
 

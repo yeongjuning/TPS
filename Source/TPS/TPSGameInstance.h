@@ -9,13 +9,11 @@
 #include "CharacterStatus.h"
 #include "Engine/DataTable.h"
 #include "AmmoInventory.h"
-#include "WeaponBase.h"
 
 #include "TPSGameInstance.generated.h"
 
-/**
- * 
- */
+class AWeaponBase;
+
 UCLASS()
 class TPS_API UTPSGameInstance : public UGameInstance
 {
@@ -24,10 +22,10 @@ class TPS_API UTPSGameInstance : public UGameInstance
 public:
 	
 	UFUNCTION(BlueprintCallable)
-	EWeaponKind GetTableKeys(FName RowName);
+	UDataTable* GetWeaponTable();
 
 	UFUNCTION(BlueprintCallable)
-	void SetWeaponPreset(EWeaponKind WeapTableKey);
+	EWeaponKind GetTableKey(FName RowName);
 
 public:
 	UTPSGameInstance();
@@ -46,10 +44,10 @@ public:
 	FWeaponPreset* WeaponPreset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Info")
-	UDataTable* WeaponDataTable;
+	UDataTable* DT_Weapon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Info")
-	TMap<EWeaponKind, FName> TableKeys;
+	TMap<EWeaponKind, FName> WeaponTableMap;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon Info")
 	TSoftClassPtr<AWeaponBase> WeaponAsset;

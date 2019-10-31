@@ -2,6 +2,7 @@
 
 
 #include "WeaponBase.h"
+#include "TPSGameInstance.h"
 #include "AmmoInventory.h"
 
 // Sets default values
@@ -11,54 +12,56 @@ AWeaponBase::AWeaponBase()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Table 가져오기
-UDataTable* AWeaponBase::GetWeaponTable()
-{
-	DT_Weapon = LoadObject<UDataTable>(nullptr, TEXT("DataTable'/Game/TPS/DataTables/WeaponDataTable.WeaponDataTable'"));
-	
-	if (DT_Weapon == nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("무기 테이블 참조를 찾을 수 없습니다."));
-		return nullptr;
-	}
-	
-	return DT_Weapon;
-}
-
-// RowNumber 가져오기
+// RowNumber 가져온다
 uint8 AWeaponBase::GetRowNumber()
 {
-	UDataTable* WeaponTable = GetWeaponTable();
+	WeaponTable = TPSGameInstance->GetWeaponTable();
 	
-	RowNames = DT_Weapon->GetRowNames();
-	WeaponIdx = FMath::RandRange(1, RowNames.Num());
+	RowNames = WeaponTable->GetRowNames();
+	WeaponIdx = FMath::RandRange(1, RowNames.Num());	
 
 	return WeaponIdx;
 }
 
-// WeaponName 가져오기
+// 이부분을 EWeaponKind형태로 바꿔준후 돌려주기
 FName AWeaponBase::GetWeaponName()
 {
 	TableIdx = GetRowNumber();
-	WeaponNumber = 0000 + TableIdx;
 
-	WeaponName = FString::Printf(TEXT("Weapon%d"), WeaponNumber);
-
+	WeaponName = FString::Printf(TEXT("Weapon%d"), TableIdx);
+	UE_LOG(LogTemp, Log, TEXT("%s"), &WeaponName);
 	return *WeaponName;
 }
 
-// WeaponPreset(이것도 GameInstance에 옮길수도 있음)
-FWeaponPreset AWeaponBase::GetWapPreset()
+// WeaponPreset
+void AWeaponBase::SetWeaponPreset()
 {
-	WeaponData = GetWeaponTable()->FindRow<FWeaponPreset>(GetWeaponName(), TEXT(""));
+	WeaponPreset = TPSGameInstance->GetWeaponTable()->FindRow<FWeaponPreset>(GetWeaponName(), TEXT(""));
 
-	return *WeaponData;
+	if (WeaponPreset == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("무기 프리셋 데이터를 찾지 못했습니다."));
+		return;
+	}
+}
+
+// UClass 형으로  Asset을 찾아 Class형태로 Return
+UClass* AWeaponBase::GetWeaponClass()
+{
+	WeaponClass = WeaponPreset->WeaponAsset.LoadSynchronous();
+
+	if (WeaponClass == nullptr)
+		return nullptr;
+
+	return WeaponClass;
 }
 
 // Called when the game starts or when spawned
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
 }
 
 // Called every frame
