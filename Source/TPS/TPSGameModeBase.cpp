@@ -8,6 +8,7 @@ ATPSGameModeBase::ATPSGameModeBase()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+// SpawnPoint
 int32 ATPSGameModeBase::GetWeaponSpawnPoint()
 {
 	int32 WapSpawnPoint = FMath::RandRange(0, WapSpawnPoints.Num() - 1);
@@ -16,9 +17,10 @@ int32 ATPSGameModeBase::GetWeaponSpawnPoint()
 	return WapSpawnPoint;
 }
 
+// Spawned Weapon Trnasform
 FTransform ATPSGameModeBase::GetWeaponTransform()
 {
-	int32 SpawnPoint = GetWeaponSpawnPoint();
+	SpawnPoint = GetWeaponSpawnPoint();
 
 	SpawnTransform = WapSpawnPoints[SpawnPoint]->GetActorTransform();
 	Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -26,6 +28,7 @@ FTransform ATPSGameModeBase::GetWeaponTransform()
 	return SpawnTransform;
 }
 
+// Trigger Spawn
 AItemTrigger* ATPSGameModeBase::SpawnTrigger()
 {
 	FTransform SpawnTF = GetWeaponTransform();
@@ -36,9 +39,34 @@ AItemTrigger* ATPSGameModeBase::SpawnTrigger()
 	return ItemTrigger;
 }
 
+// Finised WeaponSpawn
+void ATPSGameModeBase::WeaponSpawn()
+{
+	AItemTrigger* Trigger = SpawnTrigger();
+
+	UChildActorComponent* ChildActorComponent = Trigger->GetChildActorComponent();
+	if (Weapon == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Should't Weapon Casting"));
+		return;
+	}
+	// AWeaponBase의 cpp에서 Preset 가져오기
+	Weapon->GetWeaponClass();
+	if (WeaponClass == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("WeaponAsset isn't Loaded"));
+		return;
+	}
+
+	ChildActorComponent->SetChildActorClass(WeaponClass);
+}
+
 void ATPSGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWeaponSpawner::StaticClass(), WapSpawnPoints);
+	
+	WeaponSpawn();
 }

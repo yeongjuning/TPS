@@ -25,6 +25,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	AItemTrigger* SpawnTrigger();
 
+	UFUNCTION(BlueprintCallable)
+	void WeaponSpawn();
+
 protected:
 
 	UFUNCTION(BlueprintCallable)
@@ -34,20 +37,26 @@ protected:
 	FTransform GetWeaponTransform();
 
 protected:
+	
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Class")
+	TSubclassOf<AWeaponBase> WeaponClass;
 
 	UPROPERTY(VisibleAnywhere, Category = "Game Instance")
 	UTPSGameInstance* TPSGameInstance;
 
 	UPROPERTY(VisibleAnywhere, Category = "Spawn Transform")
+	int32 SpawnPoint;
+
+	UPROPERTY(VisibleAnywhere, Category = "Spawn Transform")
 	FTransform SpawnTransform;
 
-	FActorSpawnParameters Parameters;
-
 	UPROPERTY(VisibleAnywhere)
-	TArray<AWeaponSpawner*> WapSpawnPoints;
+	TArray<AActor*> WapSpawnPoints;
 
 	UPROPERTY(VisibleAnywhere)
 	AItemTrigger* ItemTrigger;
+
+	FActorSpawnParameters Parameters;
 
 	virtual void BeginPlay() override;
 
@@ -58,4 +67,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	AWeaponBase* Weapon;
+
+	// Casting Destination
+	UPROPERTY(VisibleAnywhere)
+	UClass* WeaponActorClass;
+
 };

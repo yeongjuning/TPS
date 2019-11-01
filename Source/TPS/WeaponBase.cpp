@@ -49,8 +49,9 @@ void AWeaponBase::SetWeaponPreset()
 UClass* AWeaponBase::GetWeaponClass()
 {
 	WeaponClass = WeaponPreset->WeaponAsset.LoadSynchronous();
-
+	
 	if (WeaponClass == nullptr)
+		UE_LOG(LogTemp, Error, TEXT("무기 에셋을 찾지 못했습니다."));
 		return nullptr;
 
 	return WeaponClass;
