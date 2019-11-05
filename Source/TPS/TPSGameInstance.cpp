@@ -4,12 +4,20 @@
 #include "TPSGameInstance.h"
 #include "WeaponBase.h"
 
+
 UTPSGameInstance::UTPSGameInstance()
 {
+	ConstructorHelpers::FObjectFinder<UDataTable> WeaponTableFinder(
+		TEXT("DataTable'/Game/TPS/DataTables/WeaponDataTable.WeaponDataTable'"));
+	if (WeaponTableFinder.Succeeded())
+	{
+		DT_Weapon = WeaponTableFinder.Object;
+		WeaponIdContainer = DT_Weapon->GetRowNames();
+	}
 }
 
 // Table 가져오기
-UDataTable* UTPSGameInstance::GetWeaponTable()
+UDataTable* UTPSGameInstance::LoadWeaponTable()
 {
 	DT_Weapon = LoadObject<UDataTable>(nullptr, TEXT("DataTable'/Game/TPS/DataTables/WeaponDataTable.WeaponDataTable'"));
 
@@ -22,29 +30,28 @@ UDataTable* UTPSGameInstance::GetWeaponTable()
 	return DT_Weapon;
 }
 
-// RandomKey생성
-EWeaponKind UTPSGameInstance::CreateRandomKey()
+bool UTPSGameInstance::FindWeaponPreset(const FName& InWeaponId, FWeaponPreset* OutPreset)
+{
+	OutPreset = DT_Weapon->FindRow<FWeaponPreset>(InWeaponId, TEXT(""));
+	return OutPreset != nullptr;
+}
+
+FName UTPSGameInstance::GetRandomWeaponId() const
+{
+	return WeaponIdContainer[FMath::RandRange(0, WeaponIdContainer.Num() - 1)];
+}
+
+void UTPSGameInstance::OnStart()
+{
+	Super::OnStart();
+}
+
+// RandomKey 생성
+EWeaponKind UTPSGameInstance::GetRandomWeaponKind()
 {
 	uint8 FirstValue = static_cast<uint8>(EWeaponKind::Rifle);
 	uint8 LastValue = static_cast<uint8>(EWeaponKind::Default) - 1;
 	uint8 KeyRandomValue = FMath::RandRange(FirstValue, LastValue);
 
-	NewKeyValue = static_cast<EWeaponKind>(KeyRandomValue);
-
-	return NewKeyValue;
+	return static_cast<EWeaponKind>(KeyRandomValue);
 }
-
-// EWeaponKind를 WeaponKey로 가져옴 -> 
-EWeaponKind UTPSGameInstance::GetTableKey(FName RowName)
-{
-	EWeaponKind KeyValue = CreateRandomKey();
-
-	for (TMap<EWeaponKind, FName>::TIterator It = WeaponTableMap.CreateIterator(); It; ++It)
-	{
-		KeyValue = It->Key;
-		RowName = It->Value;
-	}
-
-	return KeyValue;
-}
-

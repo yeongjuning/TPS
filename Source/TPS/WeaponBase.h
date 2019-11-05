@@ -36,7 +36,7 @@ public:
 	FName DisplayName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TSoftClassPtr<AWeaponBase> WeaponAsset = nullptr;
+	TSubclassOf<AWeaponBase> WeaponAsset = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackRange = 0.0f;
@@ -62,34 +62,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	AAmmoInventory* AmmoInven;
-
-public:
-
-	UFUNCTION(BlueprintCallable)
-	uint8 GetRowNumber();
-
-	UFUNCTION(BlueprintCallable)
-	FName GetWeaponName();
-
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponPreset();
-
-	UFUNCTION(BlueprintCallable)
-	UClass* GetWeaponClass();
-
-protected:
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Data")
-	TArray<FName> RowNames;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Data")
-	uint8 WeaponIdx;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Table Key")
-	int32 TableIdx;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Class")
-	UClass* WeaponClass;
 
 public:	
 	// Called every frame

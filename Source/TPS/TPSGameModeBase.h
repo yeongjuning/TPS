@@ -23,10 +23,7 @@ public:
 	ATPSGameModeBase();
 
 	UFUNCTION(BlueprintCallable)
-	AItemTrigger* SpawnTrigger();
-
-	UFUNCTION(BlueprintCallable)
-	void WeaponSpawn();
+	void SpawnTrigger();
 
 protected:
 
@@ -61,6 +58,11 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
+	
+	FWeaponPreset* WeaponPreset;
+
+	UPROPERTY(VisibleAnywhere)
+	UDataTable* WeaponTable;
 
 	UPROPERTY(VisibleAnywhere)
 	EWeaponKind TableKey;

@@ -29,36 +29,12 @@ FTransform ATPSGameModeBase::GetWeaponTransform()
 }
 
 // Trigger Spawn
-AItemTrigger* ATPSGameModeBase::SpawnTrigger()
+void ATPSGameModeBase::SpawnTrigger()
 {
 	FTransform SpawnTF = GetWeaponTransform();
 
 	UClass* TriggerClass= AItemTrigger::StaticClass();
-	ItemTrigger = GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, SpawnTF, Parameters);
-
-	return ItemTrigger;
-}
-
-// Finised WeaponSpawn
-void ATPSGameModeBase::WeaponSpawn()
-{
-	AItemTrigger* Trigger = SpawnTrigger();
-
-	UChildActorComponent* ChildActorComponent = Trigger->GetChildActorComponent();
-	if (Weapon == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Should't Weapon Casting"));
-		return;
-	}
-	// AWeaponBase의 cpp에서 Preset 가져오기
-	Weapon->GetWeaponClass();
-	if (WeaponClass == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("WeaponAsset isn't Loaded"));
-		return;
-	}
-
-	ChildActorComponent->SetChildActorClass(WeaponClass);
+	GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, SpawnTF, Parameters);
 }
 
 void ATPSGameModeBase::BeginPlay()
@@ -67,6 +43,7 @@ void ATPSGameModeBase::BeginPlay()
 
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWeaponSpawner::StaticClass(), WapSpawnPoints);
+
+	SpawnTrigger();
 	
-	WeaponSpawn();
 }

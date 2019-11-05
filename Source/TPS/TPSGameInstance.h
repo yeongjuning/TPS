@@ -12,6 +12,7 @@
 
 #include "TPSGameInstance.generated.h"
 
+struct FWeaponPreset;
 class AWeaponBase;
 
 UCLASS()
@@ -20,15 +21,15 @@ class TPS_API UTPSGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
-	
-	UFUNCTION(BlueprintCallable)
-	UDataTable* GetWeaponTable();
-
-	UFUNCTION(BlueprintCallable)
-	EWeaponKind GetTableKey(FName RowName);
-
-public:
 	UTPSGameInstance();
+
+	UFUNCTION(BlueprintCallable)
+	UDataTable* LoadWeaponTable();
+
+	bool FindWeaponPreset(const FName& InWeaponId, FWeaponPreset* OutPreset);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FName GetRandomWeaponId() const;	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game State")
 	ATPSGameState* TPSGameState;
@@ -38,28 +39,21 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Status")
 	UCharacterStatus* CharacterStatus;
-
+	
 public:
-
-	FWeaponPreset* WeaponPreset;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Info")
 	UDataTable* DT_Weapon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Info")
-	TMap<EWeaponKind, FName> WeaponTableMap;
+protected:
+	virtual void OnStart() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon Info")
-	TSoftClassPtr<AWeaponBase> WeaponAsset;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo Inventory")
-	AAmmoInventory* AmmoInven;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Map Key")
-	EWeaponKind NewKeyValue;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EWeaponKind WeaponMapKey;
 
 private:
 
 	UFUNCTION()
-	EWeaponKind CreateRandomKey();
+	EWeaponKind GetRandomWeaponKind();
+
+	TArray<FName> WeaponIdContainer;
 };

@@ -8,8 +8,9 @@ AItemTrigger::AItemTrigger()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Trigger"));
+	RootComponent = BoxCollision;
 	BoxCollision->SetWorldScale3D(FVector(2.0f, 2.0f, 2.0f));
 	BoxCollision->SetupAttachment(RootComponent);
 
@@ -49,14 +50,10 @@ void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 
 		if (ChildActorComponent->bVisible)
 		{
-			/** TODO :: WeaponBase에서 GetTableKey로 가져오기
-			 *		-> WeaponAsset에 해당하는 컬럼을 찾는다
-			 *		-> Key로 인해서 해당 -> Table에 있는 Dispaly 이름을 찾는다 (블루프린트의 UI를 위해서)
-			 */ 
+			ChildActorComponent->SetVisibility(false, false);
+			GetWorld()->GetTimerManager().SetTimer(SpawnTimeHandle, this, &AItemTrigger::VisibleTimer, 5.f, false);
 		}
 
-		ChildActorComponent->SetVisibility(false, false);
-		GetWorld()->GetTimerManager().SetTimer(SpawnTimeHandle, this, &AItemTrigger::VisibleTimer, 5.f, false);
 	}	
 }
 
@@ -80,12 +77,29 @@ void AItemTrigger::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
 
 	if (ChildActorComponent != nullptr)
 	{
 		UE_LOG(LogTemp, Log, TEXT("ChildActor 존재"));
 	}
 
+	FWeaponPreset* Preset = nullptr;
+	if (TPSGameInstance->FindWeaponPreset(TPSGameInstance->GetRandomWeaponId(), Preset))
+	{
+		UE_LOG(LogTemp, Log, TEXT("IsValid(Preset->WeaponAsset : %s"), (IsValid(Preset->WeaponAsset) ? TEXT("VALID") : TEXT("NOT VALID")));
+		//if (Preset->WeaponAsset == nullptr)
+		//{
+		//	UE_LOG(LogTemp, Warning, TEXT("WeaponAsset 찾기 실패!!!!"));
+		//	return;
+		//}
+		//ChildActorComponent->SetChildActorClass(Preset->WeaponAsset);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("WeaponPreset 찾기 실패!!!!"));
+		return;
+	}
 }
 
 // Called every frame

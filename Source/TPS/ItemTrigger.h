@@ -5,6 +5,7 @@
 #include "EngineMinimal.h"
 #include "GameFramework/Actor.h"
 #include "PlayerCharacter.h"
+#include "TPSGameInstance.h"
 #include "WeaponBase.h"
 
 #include "ItemTrigger.generated.h"
@@ -45,6 +46,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UTPSGameInstance* TPSGameInstance;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* BoxCollision;
