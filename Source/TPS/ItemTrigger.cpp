@@ -20,24 +20,6 @@ AItemTrigger::AItemTrigger()
 	ChildActorComponent->SetupAttachment(BoxCollision);
 }
 
-//	if (ChildActorComponent->bVisible)
-//	{
-//		uint8 WeaponIndex = TPSGameMode->WeaponIdx;
-//		TWeaponClass = TPSGameMode->TWeaponArr[WeaponIndex];
-//
-//		if (TWeaponClass != nullptr)
-//		{
-//			UE_LOG(LogTemp, Log, TEXT("WeaponIndex : %d"), WeaponIndex);
-//		}
-//
-//		PlayerCharacter->AttachToWeapon(TWeaponClass, WeaponIndex);
-//
-//		ChildActorComponent->SetVisibility(false, false);
-//
-//		GetWorld()->GetTimerManager().SetTimer(SpawnTimer, this, &AItemTrigger::VisibleTimer, 5.f, false);
-//	}
-//}
-
 void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (PlayerCharacter == nullptr)
@@ -87,12 +69,9 @@ void AItemTrigger::BeginPlay()
 	FWeaponPreset* Preset = nullptr;
 	if (TPSGameInstance->FindWeaponPreset(TPSGameInstance->GetRandomWeaponId(), Preset))
 	{
-		UE_LOG(LogTemp, Log, TEXT("IsValid(Preset->WeaponAsset : %s"), (IsValid(Preset->WeaponAsset) ? TEXT("VALID") : TEXT("NOT VALID")));
-		//if (Preset->WeaponAsset == nullptr)
-		//{
-		//	UE_LOG(LogTemp, Warning, TEXT("WeaponAsset 찾기 실패!!!!"));
-		//	return;
-		//}
+		/*UE_LOG(LogTemp, Log, TEXT("IsValid(Preset->WeaponAsset : %s"), (IsValid(Preset->WeaponAsset) ? TEXT("VALID") : TEXT("NOT VALID")));*/
+		UE_LOG(LogTemp, Log, TEXT("VALID"));
+
 		//ChildActorComponent->SetChildActorClass(Preset->WeaponAsset);
 	}
 	else

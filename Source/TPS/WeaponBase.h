@@ -36,7 +36,7 @@ public:
 	FName DisplayName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TSubclassOf<AWeaponBase> WeaponAsset = nullptr;
+	TSubclassOf<AWeaponBase> WeaponAsset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackRange = 0.0f;

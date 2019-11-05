@@ -7,3 +7,19 @@ AEnemyCharacter::AEnemyCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 }
+
+void AEnemyCharacter::Dead_Implementation()
+{
+	// TODO :: 모든 카운팅 된 몬스터가 죽어야지 GameState가 Clear
+	Cast<ATPSGameState>(GetWorld()->GetGameState())->GamePlayingState = EGamePlayingState::Clear;
+}
+
+void AEnemyCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
+void AEnemyCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+}
