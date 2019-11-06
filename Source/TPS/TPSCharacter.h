@@ -3,13 +3,14 @@
 #pragma once
 
 #include "EngineMinimal.h"
+#include "GameFramework/Character.h"
 #include "TPSGameState.h"
 #include "CharacterStatus.h"
 #include "AttackComponent.h"
-#include "WeaponBase.h"
-#include "GameFramework/Character.h"
 
 #include "TPSCharacter.generated.h"
+
+class AWeaponBase;
 
 UCLASS()
 class TPS_API ATPSCharacter : public ACharacter

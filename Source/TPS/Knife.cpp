@@ -15,7 +15,13 @@ void AKnife::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+	Ammo = AmmoInven->GetMaxAmmo();
+	UE_LOG(LogTemp, Log, TEXT("%d"), Ammo);
+}
+
+void AKnife::FireAndAttack_Implementation()
+{
+	Super::FireAndAttack_Implementation();
 }
 
 void AKnife::Tick(float DeltaSeconds)

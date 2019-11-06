@@ -15,6 +15,14 @@ AGrenade::AGrenade()
 void AGrenade::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Ammo = AmmoInven->GetMaxAmmo();
+	UE_LOG(LogTemp, Log, TEXT("%d"), Ammo);
+}
+
+void AGrenade::FireAndAttack_Implementation()
+{
+	Super::FireAndAttack_Implementation();
 }
 
 void AGrenade::Tick(float DeltaSeconds)

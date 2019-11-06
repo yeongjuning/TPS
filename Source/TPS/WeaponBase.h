@@ -5,11 +5,13 @@
 #include "EngineMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Engine/DataTable.h"
+#include "AttackComponent.h"
 
 #include "WeaponBase.generated.h"
 
 class UTPSGameInstance;
 class AAmmoInventory;
+class ATPSCharacter;
 
 UENUM(BlueprintType)
 enum class EWeaponKind : uint8
@@ -70,19 +72,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Kind")
 	EWeaponKind WeaponKind;
 	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void FireAndAttack();
+	virtual void FireAndAttack_Implementation();
+
 public:
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE float GetAmmo() const { return Ammo; }
+	float GetAmmo() const { return Ammo; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE float GetConsumeCount() const { return ConsumeCount; }
+	float GetConsumeCount() const { return ConsumeCount; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE bool IsAmmoEmpty() const { return bIsAmmoEmpty; }
+	bool IsAmmoEmpty() const { return Ammo <= 0; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE UTPSGameInstance* GetTPSGameInstance() const { return TPSGameInstance; }
+	UTPSGameInstance* GetTPSGameInstance() const { return TPSGameInstance; }
 
 protected:
 
@@ -91,10 +97,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintGetter = GetConsumeCount, Category = "Ammo Info")
 	float ConsumeCount = 0.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintGetter = IsAmmoEmpty, Category = "Ammo Info")
-	bool bIsAmmoEmpty = false;
-
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -103,6 +106,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UTPSGameInstance* TPSGameInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ATPSCharacter* TPSPlayerCharacter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAttackComponent* AttackComponent;
+
+
 
 private:
 

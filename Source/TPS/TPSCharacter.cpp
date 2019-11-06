@@ -2,6 +2,7 @@
 
 
 #include "TPSCharacter.h"
+#include "WeaponBase.h"
 
 // Sets default values
 ATPSCharacter::ATPSCharacter()
@@ -17,6 +18,11 @@ ATPSCharacter::ATPSCharacter()
 void ATPSCharacter::Attack_Implementation()
 {
 	AttackComponent->Attack();
+
+	if (IsValid(Weapon))
+	{
+		Weapon->FireAndAttack();
+	}
 }
 
 void ATPSCharacter::StopAttack_Implementation()

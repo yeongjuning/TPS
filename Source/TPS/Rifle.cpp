@@ -9,8 +9,6 @@ ARifle::ARifle()
 
 	WeaponKind = EWeaponKind::Rifle;
 	ConsumeCount = 1.0f;
-
-	
 }
 
 void ARifle::BeginPlay()
@@ -20,6 +18,11 @@ void ARifle::BeginPlay()
 	// TODO Rifle에서 TEST 이후 knife나 Grenade 넣어주기
 	Ammo = AmmoInven->GetMaxAmmo();
 	UE_LOG(LogTemp, Log, TEXT("%d"), Ammo);
+}
+
+void ARifle::FireAndAttack_Implementation()
+{
+	Super::FireAndAttack_Implementation();
 }
 
 void ARifle::Tick(float DeltaSeconds)

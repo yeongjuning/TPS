@@ -2,6 +2,7 @@
 
 
 #include "AmmoInventory.h"
+#include "WeaponBase.h"
 
 AAmmoInventory::AAmmoInventory()
 {

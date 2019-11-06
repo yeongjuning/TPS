@@ -10,7 +10,7 @@ APlayerCharacter::APlayerCharacter()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(FName(TEXT("Camera Boom")));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->RelativeRotation = FRotator(-45.0f, 0.0f, 0.0f);
-	CameraBoom->TargetArmLength = 1200.0f;
+	CameraBoom->TargetArmLength = 600.0f;
 	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->CameraLagSpeed = 2.5f;
 	CameraBoom->SetAbsolute(false, true, false);
@@ -50,6 +50,7 @@ void APlayerCharacter::Dead_Implementation()
 {
 	Super::Dead_Implementation();
 
+	ZoomToDeath();
 	Cast<ATPSGameState>(GetWorld()->GetGameState())->GamePlayingState = EGamePlayingState::GameOver;
 }
 

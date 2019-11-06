@@ -4,11 +4,11 @@
 
 #include "EngineMinimal.h"
 #include "GameFramework/PlayerState.h"
-
 #include "WeaponBase.h"
 
 #include "AmmoInventory.generated.h"
 
+class AWeaponBase;
 
 /**
  * 

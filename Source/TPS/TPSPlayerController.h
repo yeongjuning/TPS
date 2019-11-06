@@ -34,30 +34,18 @@ public:
 
 	// TPS의 GameState 가져오기
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE ATPSGameState* GetTPSGameState() const
-	{
-		return Cast<ATPSGameState>(GetWorld()->GetGameState());
-	}
+	ATPSGameState* GetTPSGameState() const { return Cast<ATPSGameState>(GetWorld()->GetGameState()); }
 
 	// TPS의 Player 가져오기
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE APlayerCharacter* GetTPSPlayer() const
-	{
-		return Cast<APlayerCharacter>(GetCharacter());
-	}
+	APlayerCharacter* GetTPSPlayer() const { return Cast<APlayerCharacter>(GetCharacter()); }
 
 	// Player의 Status 가져오기
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE UCharacterStatus* GetCharStatus() const
-	{
-		return Cast<UCharacterStatus>(GetTPSPlayer()->GetStatus());
-	}
+	UCharacterStatus* GetCharStatus() const { return Cast<UCharacterStatus>(GetTPSPlayer()->GetStatus()); }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE UAttackComponent* GetAttackComponent() const
-	{
-		return Cast<UAttackComponent>(GetTPSPlayer()->GetAttackComponent());
-	}
+	UAttackComponent* GetAttackComponent() const { return Cast<UAttackComponent>(GetTPSPlayer()->GetAttackComponent()); }
 
 protected:
 	

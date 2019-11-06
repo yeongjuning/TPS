@@ -4,6 +4,8 @@
 
 #include "EngineMinimal.h"
 #include "WeaponBase.h"
+#include "AmmoInventory.h"
+
 #include "Grenade.generated.h"
 
 /**
@@ -20,6 +22,9 @@ public:
 protected:
 
 	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void FireAndAttack_Implementation() override;
 
 public:
 	virtual void Tick(float DeltaSeconds) override;

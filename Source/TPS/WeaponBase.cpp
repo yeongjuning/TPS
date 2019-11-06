@@ -4,6 +4,7 @@
 #include "WeaponBase.h"
 #include "TPSGameInstance.h"
 #include "AmmoInventory.h"
+#include "TPSCharacter.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase()
@@ -12,12 +13,20 @@ AWeaponBase::AWeaponBase()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+void AWeaponBase::FireAndAttack_Implementation()
+{
+	UE_LOG(LogTemp, Log, TEXT("Fire And Attack"));
+}
+
 // Called when the game starts or when spawned
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
 
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
+	TPSPlayerCharacter = Cast<ATPSCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	
+	AttackComponent = TPSPlayerCharacter->GetAttackComponent();
 }
 
 // Called every frame
