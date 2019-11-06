@@ -9,7 +9,6 @@ ATPSCharacter::ATPSCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	CharStatus = CreateDefaultSubobject<UCharacterStatus>(TEXT("Character Status"));
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(FName(TEXT("Attack Component")));
 	
 	Weapon = nullptr;
@@ -47,6 +46,8 @@ void ATPSCharacter::StopReload_Implementation()
 void ATPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CharStatus = NewObject<UCharacterStatus>(this, TEXT("Character Status"));
 
 	CurHP = CharStatus->GetCurrentHealth();
 }

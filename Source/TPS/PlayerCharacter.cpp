@@ -49,6 +49,8 @@ void APlayerCharacter::StopReload_Implementation()
 void APlayerCharacter::Dead_Implementation()
 {
 	Super::Dead_Implementation();
+
+	Cast<ATPSGameState>(GetWorld()->GetGameState())->GamePlayingState = EGamePlayingState::GameOver;
 }
 
 void APlayerCharacter::ZoomToDeath()

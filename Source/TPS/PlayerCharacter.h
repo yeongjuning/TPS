@@ -19,13 +19,8 @@ public:
 
 	APlayerCharacter();
 	
-	UFUNCTION()
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	
-	UFUNCTION()
 	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }
-	
-	UFUNCTION()
 	FORCEINLINE UChildActorComponent* GetChildWeapon() const { return ChildWeapon; }
 
 protected:

@@ -8,25 +8,26 @@
 #include "PlayerCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-#include "TPSAIController.generated.h"
+#include "EnemyAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TPS_API ATPSAIController : public AAIController
+class TPS_API AEnemyAIController : public AAIController
 {
 	GENERATED_BODY()
 	
 public:
-	ATPSAIController();
+	AEnemyAIController();
 
 	FTimerHandle ResetTimerHandler;
 
-	virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaSeconds) override;
 
 protected:
-	virtual void BeginPlay() override;
 
 	APlayerCharacter* TargetedPlayer;
+
+	virtual void BeginPlay() override;
 };

@@ -47,30 +47,30 @@ public:
 public:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
-	float CurHP;
+	float CurHP = 0.0f;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
-	float CurStamina;
+	float CurStamina = 0.0f;
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE UAttackComponent* GetAttackComponent() const { return AttackComponent; }
+	UAttackComponent* GetAttackComponent() const { return AttackComponent; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE	UCharacterStatus* GetStatus() const { return CharStatus; }
+	UCharacterStatus* GetStatus() const { return CharStatus; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE AWeaponBase* GetWeapon() const { return Weapon; }
+	AWeaponBase* GetWeapon() const { return Weapon; }
 
 public:
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE bool IsReload() const { return bIsReload; }
+	bool IsReload() const { return bIsReload; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE bool IsStopReload() const { return !bIsReload; }
+	bool IsStopReload() const { return !bIsReload; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE bool IsDead() const { return bIsDead; }
+	bool IsDead() const { return bIsDead; }
 
 protected:
 
@@ -98,6 +98,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
+
 	FTimerHandle DeathTimerHandler;
 	UFUNCTION()
 	void OnDeathTimerComplete();

@@ -41,11 +41,18 @@ class TPS_API AEnemyCharacter : public ATPSCharacter
 public:
 	AEnemyCharacter();
 
-	virtual void Dead_Implementation() override;
-
 	virtual void Tick(float DeltaTime) override;
 
 protected:
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Dead_Implementation() override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Attack_Implementation() override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void StopAttack_Implementation() override;
 
 	virtual void BeginPlay() override;
 };

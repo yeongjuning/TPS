@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TPSAIController.h"
+#include "EnemyAIController.h"
 
-ATPSAIController::ATPSAIController()
+AEnemyAIController::AEnemyAIController()
 {
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void ATPSAIController::Tick(float DeltaTime)
+void AEnemyAIController::Tick(float DeltaSeconds)
 {
-	Super::Tick(DeltaTime);
+	Super::Tick(DeltaSeconds);
 
 	TargetedPlayer = Cast<APlayerCharacter>(GetBlackboardComponent()->GetValueAsObject(TEXT("TargetToFollow")));
 
@@ -26,10 +26,9 @@ void ATPSAIController::Tick(float DeltaTime)
 		GetBlackboardComponent()->SetValueAsObject(TEXT("TargetToFollow"), nullptr);
 		GetBlackboardComponent()->SetValueAsBool(TEXT("IsDead"), true);
 	}
-
 }
 
-void ATPSAIController::BeginPlay()
+void AEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
 }

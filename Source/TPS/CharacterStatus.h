@@ -40,13 +40,13 @@ public:
 public:
 	// Get Health Info
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE bool IsHealthZero() const { return CurHealth <= 0.0f; }
+	bool IsHealthZero() const { return CurHealth <= 0.0f; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+	float GetMaxHealth() const { return MaxHealth; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE float GetCurrentHealth() const { return CurHealth; }
+	float GetCurrentHealth() const { return CurHealth; }
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, BlueprintGetter = IsHealthZero, Category = "Health")
 	bool bIsHealthZero = false;
