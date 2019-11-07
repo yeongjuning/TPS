@@ -1,0 +1,18 @@
+Begin Object Class=/Script/Engine.BlendSpace1D Name="ThirdPerson_IdleRun_2D"
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfo Name="SceneThumbnailInfo_0"
+   End Object
+   Begin Object Name="SceneThumbnailInfo_0"
+   End Object
+   TargetWeightInterpolationSpeedPerSec=5.000000
+   SampleData(0)=(Animation=AnimSequence'"/Game/Mannequin/Animations/ThirdPersonIdle.ThirdPersonIdle"')
+   SampleData(1)=(Animation=AnimSequence'"/Game/Mannequin/Animations/ThirdPersonWalk.ThirdPersonWalk"',SampleValue=(X=300.000000,Y=0.000000,Z=0.000000))
+   SampleData(2)=(Animation=AnimSequence'"/Game/Mannequin/Animations/ThirdPersonRun.ThirdPersonRun"',SampleValue=(X=600.000000,Y=0.000000,Z=0.000000))
+   GridSamples(0)=(Indices[0]=1,Indices[1]=0,Weights[1]=1.000000)
+   GridSamples(1)=(Indices[0]=1,Indices[1]=0,Weights[0]=0.500000,Weights[1]=0.500000)
+   GridSamples(2)=(Indices[0]=1,Indices[1]=0,Weights[0]=1.000000)
+   GridSamples(3)=(Indices[0]=2,Indices[1]=1,Weights[0]=0.500000,Weights[1]=0.500000)
+   GridSamples(4)=(Indices[0]=2,Indices[1]=1,Weights[0]=1.000000)
+   BlendParameters(0)=(DisplayName="Speed",Max=600.000000)
+   Skeleton=Skeleton'"/Game/AnimStarterPack/UE4_Mannequin/Mesh/UE4_Mannequin_Skeleton.UE4_Mannequin_Skeleton"'
+   ThumbnailInfo=SceneThumbnailInfo'"SceneThumbnailInfo_0"'
+End Object

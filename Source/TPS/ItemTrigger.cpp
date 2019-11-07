@@ -22,6 +22,9 @@ AItemTrigger::AItemTrigger()
 
 void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
+	UE_LOG(LogTemp, Log, TEXT("Overlap Trigger"));
+
 	if (PlayerCharacter == nullptr)
 		return;
 
@@ -67,7 +70,6 @@ void AItemTrigger::BeginPlay()
 
 	if (TPSGameInstance->FindWeaponPreset(TPSGameInstance->GetRandomWeaponId(), Preset))
 	{
-		/*UE_LOG(LogTemp, Log, TEXT("IsValid(Preset->WeaponAsset : %s"), (IsValid(Preset->WeaponAsset) ? TEXT("VALID") : TEXT("NOT VALID")));*/
 		ChildActorComponent->SetChildActorClass(Preset.WeaponAsset);
 	}
 	else
@@ -78,10 +80,10 @@ void AItemTrigger::BeginPlay()
 }
 
 // Called every frame
-void AItemTrigger::Tick(float DeltaTime)
+void AItemTrigger::Tick(float DeltaSeconds)
 {
-	Super::Tick(DeltaTime);
-//	RotationAngle += DeltaSeconds * 0.06f;
+	Super::Tick(DeltaSeconds);
+	//	float RotationAngle += DeltaSeconds * 0.06f;
 //
 //	FRotator WeaponRotation = FRotator::ZeroRotator;
 //	WeaponRotation.Yaw = RotationAngle;

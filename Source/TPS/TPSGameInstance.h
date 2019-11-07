@@ -7,6 +7,7 @@
 #include "TPSGameState.h"
 #include "PlayerCharacter.h"
 #include "CharacterStatus.h"
+#include "EnemyCharacter.h"
 #include "Engine/DataTable.h"
 #include "AmmoInventory.h"
 
@@ -26,10 +27,21 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UDataTable* LoadWeaponTable();
 
+	UFUNCTION(BlueprintCallable)
 	bool FindWeaponPreset(const FName& InWeaponId, FWeaponPreset& OutPreset);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FName GetRandomWeaponId() const;	
+
+public:
+	
+	UFUNCTION(BlueprintCallable)
+	UDataTable* LoadEnemyTable();
+
+	UFUNCTION(BlueprintCallable)
+	bool FindEnemyPreset(const FName& InEnemyId, FEnemyPreset& OutPreset);
+
+public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game State")
 	ATPSGameState* TPSGameState;
@@ -41,11 +53,14 @@ public:
 	UCharacterStatus* CharacterStatus;
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Info")
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Table")
 	UDataTable* DT_Weapon;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster Table")
+	UDataTable* DT_Enemy;
+
 protected:
-	virtual void OnStart() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EWeaponKind WeaponMapKey;
@@ -56,4 +71,5 @@ private:
 	EWeaponKind GetRandomWeaponKind();
 
 	TArray<FName> WeaponIdContainer;
+	TArray<FName> EnemyIdContainer;
 };

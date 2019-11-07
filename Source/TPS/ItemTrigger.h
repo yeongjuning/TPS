@@ -26,7 +26,7 @@ public:
 
 public:
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION()
 		void OnOverlapBegin

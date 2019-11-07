@@ -9,6 +9,7 @@
 #include "WeaponSpawner.h"
 #include "ItemTrigger.h"
 #include "TPSGameInstance.h"
+#include "EnemySpawner.h"
 #include "TPSGameModeBase.generated.h"
 
 /**
@@ -22,16 +23,27 @@ class TPS_API ATPSGameModeBase : public AGameModeBase
 public:
 	ATPSGameModeBase();
 
+protected:
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetRandomWeaponSpawnPoint() const;
+
+	UFUNCTION(BlueprintCallable)
+	FTransform GetRandomWeaponTransform();
+
 	UFUNCTION(BlueprintCallable)
 	void SpawnTrigger();
 
 protected:
 
 	UFUNCTION(BlueprintCallable)
-	int32 GetWeaponSpawnPoint();
+	int32 GetRandomEnemySpawnPoint() const;
 
 	UFUNCTION(BlueprintCallable)
-	FTransform GetWeaponTransform();
+	FTransform GetRandomEnemyTransform();
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnEnemy();
 
 protected:
 	
@@ -41,37 +53,39 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Game Instance")
 	UTPSGameInstance* TPSGameInstance;
 
-	UPROPERTY(VisibleAnywhere, Category = "Spawn Transform")
-	int32 SpawnPoint;
+protected:
 
-	UPROPERTY(VisibleAnywhere, Category = "Spawn Transform")
-	FTransform SpawnTransform;
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Spawn Transform")
+	int32 WapSpawnPoint;
+
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Spawn Transform")
+	FTransform RandomWapSpawnTransform;
+
+	UPROPERTY(VisibleAnywhere)
+	AItemTrigger* ItemTrigger;
+
+
+protected:
+
+	UPROPERTY(VisibleAnywhere, Category = "Enemy Spawn Transform")
+	int32 EnemySpawnPoint;
+
+	UPROPERTY(VisibleAnywhere, Category = "Enemy Spawn Transform")
+	FTransform RandomEnemySpawnTransform;
+
+protected:
+
+	UPROPERTY(VisibleAnywhere)
+	AWeaponBase* Weapon;
+
+	virtual void BeginPlay() override;
+private:
+
+	FActorSpawnParameters Parameters;
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*> WapSpawnPoints;
 
 	UPROPERTY(VisibleAnywhere)
-	AItemTrigger* ItemTrigger;
-
-	FActorSpawnParameters Parameters;
-
-	virtual void BeginPlay() override;
-
-protected:
-	
-	FWeaponPreset* WeaponPreset;
-
-	UPROPERTY(VisibleAnywhere)
-	UDataTable* WeaponTable;
-
-	UPROPERTY(VisibleAnywhere)
-	EWeaponKind TableKey;
-
-	UPROPERTY(VisibleAnywhere)
-	AWeaponBase* Weapon;
-
-	// Casting Destination
-	UPROPERTY(VisibleAnywhere)
-	UClass* WeaponActorClass;
-
+	TArray<AActor*> EnemySpawnPoints;
 };

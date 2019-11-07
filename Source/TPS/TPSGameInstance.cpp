@@ -14,7 +14,17 @@ UTPSGameInstance::UTPSGameInstance()
 		DT_Weapon = WeaponTableFinder.Object;
 		WeaponIdContainer = DT_Weapon->GetRowNames();
 	}
+
+	ConstructorHelpers::FObjectFinder<UDataTable> EnemyTableFinder(
+		TEXT("DataTable'/Game/TPS/DataTables/EnemyDataTable.EnemyDataTable'"));
+	if (EnemyTableFinder.Succeeded())
+	{
+		DT_Enemy = EnemyTableFinder.Object;
+		EnemyIdContainer = DT_Enemy->GetRowNames();
+	}
 }
+
+/**********************************WeaponLoad****************************************/
 
 // Table 가져오기
 UDataTable* UTPSGameInstance::LoadWeaponTable()
@@ -34,12 +44,12 @@ UDataTable* UTPSGameInstance::LoadWeaponTable()
 // 장점: return값을 bool값으로 함으로써 받아올수 있는지 없는지 판단
 bool UTPSGameInstance::FindWeaponPreset(const FName& InWeaponId, FWeaponPreset& OutPreset)
 {
-	FDataTableRowHandle WeaponHandle;
+	FDataTableRowHandle WeaponRowHandle;
 
-	WeaponHandle.DataTable = DT_Weapon;
-	WeaponHandle.RowName = InWeaponId;
+	WeaponRowHandle.DataTable = DT_Weapon;
+	WeaponRowHandle.RowName = InWeaponId;
 
-	FWeaponPreset* Row = WeaponHandle.GetRow<FWeaponPreset>(FString());
+	FWeaponPreset* Row = WeaponRowHandle.GetRow<FWeaponPreset>(FString());
 
 	if (Row != nullptr)
 	{
@@ -56,11 +66,6 @@ FName UTPSGameInstance::GetRandomWeaponId() const
 	return WeaponIdContainer[FMath::RandRange(0, WeaponIdContainer.Num() - 1)];
 }
 
-void UTPSGameInstance::OnStart()
-{
-	Super::OnStart();
-}
-
 // RandomKey 생성
 EWeaponKind UTPSGameInstance::GetRandomWeaponKind()
 {
@@ -69,4 +74,37 @@ EWeaponKind UTPSGameInstance::GetRandomWeaponKind()
 	uint8 KeyRandomValue = FMath::RandRange(FirstValue, LastValue);
 
 	return static_cast<EWeaponKind>(KeyRandomValue);
+}
+
+/**********************************MonsterLoad****************************************/
+
+UDataTable* UTPSGameInstance::LoadEnemyTable()
+{
+	DT_Enemy = LoadObject<UDataTable>(nullptr, TEXT("DataTable'/Game/TPS/DataTables/EnemyDataTable.EnemyDataTable'"));
+
+	if (DT_Enemy == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT(" 테이블 참조를 찾을 수 없습니다."));
+		return nullptr;
+	}
+	
+	return DT_Enemy;
+}
+
+bool UTPSGameInstance::FindEnemyPreset(const FName& InEnemyId, FEnemyPreset& OutPreset)
+{
+	FDataTableRowHandle EnemyRowHandle;
+	
+	EnemyRowHandle.DataTable = DT_Enemy;
+	EnemyRowHandle.RowName = InEnemyId;
+
+	FEnemyPreset* Row = EnemyRowHandle.GetRow<FEnemyPreset>(FString());
+	
+	if (Row != nullptr)
+	{
+		OutPreset = *Row;
+		return true;
+	}
+
+	return false;
 }

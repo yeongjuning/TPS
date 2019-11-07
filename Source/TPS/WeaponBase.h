@@ -118,4 +118,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	FString WeaponName;
 
+	UPROPERTY(VisibleAnywhere)
+	float RotationAngle = 0.0f;
 };

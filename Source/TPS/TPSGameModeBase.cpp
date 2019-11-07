@@ -8,33 +8,57 @@ ATPSGameModeBase::ATPSGameModeBase()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// SpawnPoint
-int32 ATPSGameModeBase::GetWeaponSpawnPoint()
-{
-	int32 WapSpawnPoint = FMath::RandRange(0, WapSpawnPoints.Num() - 1);
-	UE_LOG(LogTemp, Log, TEXT("SpawnPoint Of Weapon: %d"), WapSpawnPoint);
+/**********************************WeaponSpawn****************************************/
 
-	return WapSpawnPoint;
+// SpawnPoint
+int32 ATPSGameModeBase::GetRandomWeaponSpawnPoint() const
+{
+	return FMath::RandRange(0, WapSpawnPoints.Num() - 1);
 }
 
 // Spawned Weapon Trnasform
-FTransform ATPSGameModeBase::GetWeaponTransform()
+FTransform ATPSGameModeBase::GetRandomWeaponTransform()
 {
-	SpawnPoint = GetWeaponSpawnPoint();
+	WapSpawnPoint = GetRandomWeaponSpawnPoint();
 
-	SpawnTransform = WapSpawnPoints[SpawnPoint]->GetActorTransform();
+	RandomWapSpawnTransform = WapSpawnPoints[WapSpawnPoint]->GetActorTransform();
 	Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	return SpawnTransform;
+	return RandomWapSpawnTransform;
 }
 
 // Trigger Spawn
 void ATPSGameModeBase::SpawnTrigger()
 {
-	FTransform SpawnTF = GetWeaponTransform();
-
 	UClass* TriggerClass= AItemTrigger::StaticClass();
-	GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, SpawnTF, Parameters);
+	GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, GetRandomWeaponTransform(), Parameters);
+}
+
+/**********************************EnemySpawn****************************************/
+
+int32 ATPSGameModeBase::GetRandomEnemySpawnPoint() const
+{
+	return FMath::RandRange(0, EnemySpawnPoints.Num() - 1);
+}
+
+FTransform ATPSGameModeBase::GetRandomEnemyTransform()
+{
+	EnemySpawnPoint = GetRandomEnemySpawnPoint();
+
+	RandomEnemySpawnTransform = EnemySpawnPoints[EnemySpawnPoint]->GetActorTransform();
+	Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	return RandomEnemySpawnTransform;
+}
+
+void ATPSGameModeBase::SpawnEnemy()
+{
+	/** todo:: EnemyDataTable에 있는 Row순서대로 Spawn
+	 * 1. 게임이 시작하면 몇 초 뒤 Count만큼 첫번째 Row가 Spawn
+	 * 2. 나오는 Enemy의 Count를 모두 죽이면 다음 Row로 넘아가서 Spawn
+	 * 3. 모든 Row가 종료되면 Spawn을 끝내고 Clear;
+	 */ 
+
 }
 
 void ATPSGameModeBase::BeginPlay()

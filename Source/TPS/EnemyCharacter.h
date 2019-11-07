@@ -11,13 +11,13 @@
 #include "EnemyCharacter.generated.h"
 
 USTRUCT(BlueprintType)
-struct TPS_API FCharacterPreset: public FTableRowBase
+struct TPS_API FEnemyPreset: public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText DisplayName = FText::GetEmpty();
+	FName DisplayName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftClassPtr<ATPSCharacter> CharacterAsset = nullptr;
