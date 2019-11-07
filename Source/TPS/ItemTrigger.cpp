@@ -32,6 +32,8 @@ void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 
 		if (ChildActorComponent->bVisible)
 		{
+			UE_LOG(LogTemp, Log, TEXT("Overlap Trigger"));
+			// TODO :: Player에게 등짝에 Equip해주도록 설정
 			ChildActorComponent->SetVisibility(false, false);
 			GetWorld()->GetTimerManager().SetTimer(SpawnTimeHandle, this, &AItemTrigger::VisibleTimer, 5.f, false);
 		}
@@ -61,18 +63,12 @@ void AItemTrigger::BeginPlay()
 	PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
 
-	if (ChildActorComponent != nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("ChildActor 존재"));
-	}
+	FWeaponPreset Preset;
 
-	FWeaponPreset* Preset = nullptr;
 	if (TPSGameInstance->FindWeaponPreset(TPSGameInstance->GetRandomWeaponId(), Preset))
 	{
 		/*UE_LOG(LogTemp, Log, TEXT("IsValid(Preset->WeaponAsset : %s"), (IsValid(Preset->WeaponAsset) ? TEXT("VALID") : TEXT("NOT VALID")));*/
-		UE_LOG(LogTemp, Log, TEXT("VALID"));
-
-		//ChildActorComponent->SetChildActorClass(Preset->WeaponAsset);
+		ChildActorComponent->SetChildActorClass(Preset.WeaponAsset);
 	}
 	else
 	{
@@ -85,17 +81,15 @@ void AItemTrigger::BeginPlay()
 void AItemTrigger::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//RotationAngle += DeltaSeconds * 0.06f;
-
-	//FRotator WeaponRotation = FRotator::ZeroRotator;
-	//WeaponRotation.Yaw = RotationAngle;
-
-	//if (ChildActorComponent == nullptr)
-	//	return;
-
-	//ChildActorComponent->AddRelativeRotation(WeaponRotation);
-
+//	RotationAngle += DeltaSeconds * 0.06f;
+//
+//	FRotator WeaponRotation = FRotator::ZeroRotator;
+//	WeaponRotation.Yaw = RotationAngle;
+//
+//	if (ChildActorComponent == nullptr)
+//		return;
+//
+//	ChildActorComponent->AddRelativeRotation(WeaponRotation);
 }
 
 

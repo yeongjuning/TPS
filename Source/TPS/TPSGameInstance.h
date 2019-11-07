@@ -26,7 +26,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UDataTable* LoadWeaponTable();
 
-	bool FindWeaponPreset(const FName& InWeaponId, FWeaponPreset* OutPreset);
+	bool FindWeaponPreset(const FName& InWeaponId, FWeaponPreset& OutPreset);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FName GetRandomWeaponId() const;	

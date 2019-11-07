@@ -113,10 +113,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UAttackComponent* AttackComponent;
 
-
-
 private:
 
 	UPROPERTY(VisibleAnywhere)
 	FString WeaponName;
+
 };

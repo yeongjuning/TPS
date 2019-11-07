@@ -30,10 +30,25 @@ UDataTable* UTPSGameInstance::LoadWeaponTable()
 	return DT_Weapon;
 }
 
-bool UTPSGameInstance::FindWeaponPreset(const FName& InWeaponId, FWeaponPreset* OutPreset)
+// 포인터가 아닌 데이터가 복사된 경우 매개변수로 참조형으로 받음
+// 장점: return값을 bool값으로 함으로써 받아올수 있는지 없는지 판단
+bool UTPSGameInstance::FindWeaponPreset(const FName& InWeaponId, FWeaponPreset& OutPreset)
 {
-	OutPreset = DT_Weapon->FindRow<FWeaponPreset>(InWeaponId, TEXT(""));
-	return OutPreset != nullptr;
+	FDataTableRowHandle WeaponHandle;
+
+	WeaponHandle.DataTable = DT_Weapon;
+	WeaponHandle.RowName = InWeaponId;
+
+	FWeaponPreset* Row = WeaponHandle.GetRow<FWeaponPreset>(FString());
+
+	if (Row != nullptr)
+	{
+		// 찾아낸 Row가 가리키는 구조체를 복사
+		OutPreset = *Row;
+		return true;
+	}
+
+	return false;
 }
 
 FName UTPSGameInstance::GetRandomWeaponId() const
