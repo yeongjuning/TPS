@@ -26,6 +26,14 @@ APlayerCharacter::APlayerCharacter()
 	ChildWeapon->SetupAttachment(GetMesh());
 }
 
+void APlayerCharacter::EquipWeapon(EWeaponKind WeaponKind)
+{
+	//FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget,
+	//	EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+
+	//Weapons[WeaponIdx]->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Socket_Hand_R"));
+}
+
 void APlayerCharacter::Attack_Implementation()
 {
 	Super::Attack_Implementation();

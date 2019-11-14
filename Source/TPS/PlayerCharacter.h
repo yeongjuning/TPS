@@ -4,7 +4,7 @@
 
 #include "EngineMinimal.h"
 #include "TPSCharacter.h"
-
+#include "WeaponBase.h"
 #include "PlayerCharacter.generated.h"
 
 /**
@@ -22,8 +22,14 @@ public:
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 	FORCEINLINE UChildActorComponent* GetChildWeapon() const { return ChildWeapon; }
+	
+protected:
+
+	UFUNCTION(BlueprintCallable)
+	void EquipWeapon(EWeaponKind WeaponKind);
 
 protected:
+
 	UFUNCTION(BlueprintCallable)
 	virtual void Attack_Implementation() override;
 
@@ -51,9 +57,6 @@ private:
 	UChildActorComponent* ChildWeapon;
 
 protected:
-
-	//UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, BlueprintGetter = GetTPSPlayerStatus, Category = "Status of Player")
-	//APlayerStatus* PlayerStatus;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector2D MovementInput;
