@@ -10,6 +10,8 @@
 
 #include "ItemTrigger.generated.h"
 
+class ATPSGameModeBase;
+
 UCLASS()
 class TPS_API AItemTrigger : public AActor
 {
@@ -40,13 +42,13 @@ public:
 	UFUNCTION()
 	void VisibleTimer();
 
-	UFUNCTION()
-	bool ExistChildActorComp(UChildActorComponent* ChildActor);
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	ATPSGameModeBase* TPSGameMode;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UTPSGameInstance* TPSGameInstance;
 
@@ -66,4 +68,12 @@ protected:
 	AWeaponBase* Weapon;
 
 	FTimerHandle SpawnTimeHandle;
+
+private:
+
+	UPROPERTY(VisibleAnywhere)
+	float RotationAngle = 0.0f;
+
+	UPROPERTY(VisibleAnywhere)
+	FName CurSpawnedWeaponId;
 };

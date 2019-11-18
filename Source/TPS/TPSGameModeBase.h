@@ -7,11 +7,12 @@
 #include "WeaponBase.h"
 #include "AmmoInventory.h"
 #include "WeaponSpawner.h"
-#include "ItemTrigger.h"
+
 #include "TPSGameInstance.h"
 #include "EnemySpawner.h"
 #include "TPSGameModeBase.generated.h"
 
+class AItemTrigger;
 /**
  * 
  */
@@ -22,6 +23,9 @@ class TPS_API ATPSGameModeBase : public AGameModeBase
 	
 public:
 	ATPSGameModeBase();
+
+	UPROPERTY(VisibleAnywhere)
+	FName WeaponId;
 
 protected:
 
@@ -61,10 +65,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Spawn Transform")
 	FTransform RandomWapSpawnTransform;
 
-	UPROPERTY(VisibleAnywhere)
-	AItemTrigger* ItemTrigger;
-
-
 protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Enemy Spawn Transform")
@@ -79,7 +79,10 @@ protected:
 	AWeaponBase* Weapon;
 
 	virtual void BeginPlay() override;
+
 private:
+
+	FWeaponPreset Preset;
 
 	FActorSpawnParameters Parameters;
 

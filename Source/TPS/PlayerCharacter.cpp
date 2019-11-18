@@ -26,8 +26,9 @@ APlayerCharacter::APlayerCharacter()
 	ChildWeapon->SetupAttachment(GetMesh());
 }
 
-void APlayerCharacter::EquipWeapon(EWeaponKind WeaponKind)
+void APlayerCharacter::EquipWeapon(FName WeaponId)
 {
+	UE_LOG(LogTemp, Log, TEXT("%s"), *(WeaponId.ToString()));
 	//FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget,
 	//	EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
 

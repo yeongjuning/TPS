@@ -23,10 +23,10 @@ public:
 	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 	FORCEINLINE UChildActorComponent* GetChildWeapon() const { return ChildWeapon; }
 	
-protected:
+public:
 
 	UFUNCTION(BlueprintCallable)
-	void EquipWeapon(EWeaponKind WeaponKind);
+	void EquipWeapon(FName WeaponId);
 
 protected:
 

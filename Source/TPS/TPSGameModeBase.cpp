@@ -2,6 +2,7 @@
 
 
 #include "TPSGameModeBase.h"
+#include "ItemTrigger.h"
 
 ATPSGameModeBase::ATPSGameModeBase()
 {
@@ -31,7 +32,18 @@ FTransform ATPSGameModeBase::GetRandomWeaponTransform()
 void ATPSGameModeBase::SpawnTrigger()
 {
 	UClass* TriggerClass= AItemTrigger::StaticClass();
-	GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, GetRandomWeaponTransform(), Parameters);
+	AItemTrigger* Trigger = GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, GetRandomWeaponTransform(), Parameters);
+	UChildActorComponent* ChildActorComponent = Trigger->GetChildActorComponent();
+	
+	if (TPSGameInstance->FindWeaponPreset(WeaponId, Preset))
+	{
+		ChildActorComponent->SetChildActorClass(Preset.WeaponAsset);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("WeaponPreset Serch Failed"));
+		return;
+	}
 }
 
 /**********************************EnemySpawn****************************************/
@@ -65,9 +77,10 @@ void ATPSGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWeaponSpawner::StaticClass(), WapSpawnPoints);
+	
+	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
+	WeaponId = TPSGameInstance->GetRandomWeaponId();
 
 	SpawnTrigger();
-	
 }

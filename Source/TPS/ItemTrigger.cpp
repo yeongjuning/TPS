@@ -2,6 +2,7 @@
 
 
 #include "ItemTrigger.h"
+#include "TPSGameModeBase.h"
 
 // Sets default values
 AItemTrigger::AItemTrigger()
@@ -22,7 +23,6 @@ AItemTrigger::AItemTrigger()
 
 void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
 	UE_LOG(LogTemp, Log, TEXT("Overlap Trigger"));
 
 	if (PlayerCharacter == nullptr)
@@ -30,13 +30,13 @@ void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 
 	if (OtherActor == PlayerCharacter)
 	{
-		if (!(ExistChildActorComp(ChildActorComponent)))		// ChildActor가 존재하는지 체크
+		if (ChildActorComponent == nullptr)
 			return;
-
+		
 		if (ChildActorComponent->bVisible)
 		{
-			UE_LOG(LogTemp, Log, TEXT("Overlap Trigger"));
-			// TODO :: Player에게 등짝에 Equip해주도록 설정
+			// 현재 Spawn된 WeaponId를 받아서 장착부근에 어떤 무기인지 넘겨주기
+			PlayerCharacter->EquipWeapon(CurSpawnedWeaponId);
 			ChildActorComponent->SetVisibility(false, false);
 			GetWorld()->GetTimerManager().SetTimer(SpawnTimeHandle, this, &AItemTrigger::VisibleTimer, 5.f, false);
 		}
@@ -49,49 +49,33 @@ void AItemTrigger::VisibleTimer()
 	ChildActorComponent->SetVisibility(true, false);
 }
 
-bool AItemTrigger::ExistChildActorComp(UChildActorComponent* ChildActor)
-{
-	if (ChildActor == nullptr)
-		UE_LOG(LogTemp, Log, TEXT("ChildActor가 존재하지 않습니다."));
-		return false;
-	
-	return true;
-}
-
 // Called when the game starts or when spawned
 void AItemTrigger::BeginPlay()
 {
 	Super::BeginPlay();
 
+	TPSGameMode = GetWorld()->GetAuthGameMode<ATPSGameModeBase>();
+	CurSpawnedWeaponId = TPSGameMode->WeaponId;
+	
 	PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
-
-	FWeaponPreset Preset;
-
-	if (TPSGameInstance->FindWeaponPreset(TPSGameInstance->GetRandomWeaponId(), Preset))
-	{
-		ChildActorComponent->SetChildActorClass(Preset.WeaponAsset);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("WeaponPreset 찾기 실패!!!!"));
-		return;
-	}
+	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());	// 일단 냅두기
+	
 }
 
 // Called every frame
 void AItemTrigger::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	//	float RotationAngle += DeltaSeconds * 0.06f;
-//
-//	FRotator WeaponRotation = FRotator::ZeroRotator;
-//	WeaponRotation.Yaw = RotationAngle;
-//
-//	if (ChildActorComponent == nullptr)
-//		return;
-//
-//	ChildActorComponent->AddRelativeRotation(WeaponRotation);
+
+	RotationAngle += DeltaSeconds * 0.06f;
+
+	FRotator WeaponRotation = FRotator::ZeroRotator;
+	WeaponRotation.Yaw = RotationAngle;
+
+	if (ChildActorComponent == nullptr)
+		return;
+
+	ChildActorComponent->AddRelativeRotation(WeaponRotation);
 }
 
 
