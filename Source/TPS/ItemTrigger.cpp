@@ -36,7 +36,7 @@ void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 		if (ChildActorComponent->bVisible)
 		{
 			// 현재 Spawn된 WeaponId를 받아서 장착부근에 어떤 무기인지 넘겨주기
-			PlayerCharacter->EquipWeapon(CurSpawnedWeaponId);
+			PlayerCharacter->EquipWeapon(WeaponPreset.WeaponAsset, WeaponPreset.WeaponKind, CurSpawnedWeaponId);
 			ChildActorComponent->SetVisibility(false, false);
 			GetWorld()->GetTimerManager().SetTimer(SpawnTimeHandle, this, &AItemTrigger::VisibleTimer, 5.f, false);
 		}

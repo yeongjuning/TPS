@@ -34,13 +34,13 @@ void AWeaponBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (this == nullptr)
-		return;
+	//if (this == nullptr)
+	//	return;
 
-	RotationAngle += DeltaSeconds * 0.06f;
+	//RotationAngle += DeltaSeconds * 0.06f;
 
-	FRotator WeaponRotation = FRotator::ZeroRotator;
-	WeaponRotation.Yaw = RotationAngle;
+	//FRotator WeaponRotation = FRotator::ZeroRotator;
+	//WeaponRotation.Yaw = RotationAngle;
 
-	this->SetActorRelativeRotation(WeaponRotation);
+	//this->SetActorRelativeRotation(WeaponRotation);
 }

@@ -76,4 +76,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	FName CurSpawnedWeaponId;
+
+	FWeaponPreset WeaponPreset;
 };

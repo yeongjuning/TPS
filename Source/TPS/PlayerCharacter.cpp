@@ -26,13 +26,31 @@ APlayerCharacter::APlayerCharacter()
 	ChildWeapon->SetupAttachment(GetMesh());
 }
 
-void APlayerCharacter::EquipWeapon(FName WeaponId)
+void APlayerCharacter::EquipWeapon(TSubclassOf<AWeaponBase> WeaponBase, EWeaponKind WeaponKind, FName WeaponId)
 {
+	// WeaponId는 Debug용으로 임시로 매개변수 받아옴 (차후에 필요할 수도 있어서 안지움)
 	UE_LOG(LogTemp, Log, TEXT("%s"), *(WeaponId.ToString()));
-	//FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget,
-	//	EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
 
-	//Weapons[WeaponIdx]->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Socket_Hand_R"));
+	uint8 EWapInt = static_cast<uint8>(WeaponKind);
+	UE_LOG(LogTemp, Log, TEXT("%d"), EWapInt);
+	
+	FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget,
+		EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+
+	//switch (EWapInt)
+	//{
+	//case 0:
+	//	Weapon->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Rifle_Socket"));
+	//	break;
+	//case 1:
+	//	Weapon->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Knife_Socket"));
+	//	break;
+	//case 2:
+	//	Weapon->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Grenade_Socket"));
+	//	break;
+	//default:
+	//	break;
+	//}
 }
 
 void APlayerCharacter::Attack_Implementation()

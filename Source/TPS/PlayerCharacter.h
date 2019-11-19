@@ -26,7 +26,7 @@ public:
 public:
 
 	UFUNCTION(BlueprintCallable)
-	void EquipWeapon(FName WeaponId);
+	void EquipWeapon(TSubclassOf<AWeaponBase> WeaponBase, EWeaponKind WeaponKind, FName WeaponId);
 
 protected:
 
