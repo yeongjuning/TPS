@@ -17,8 +17,8 @@ AItemTrigger::AItemTrigger()
 
 	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &AItemTrigger::OnOverlapBegin);
 
-	ChildActorComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon Actor"));
-	ChildActorComponent->SetupAttachment(BoxCollision);
+	AttackComponent = CreateDefaultSubobject<UAttackComponent>(FName(TEXT("Attack Component")));
+	AttackComponent->SetupAttachment(BoxCollision, TEXT("Weapon Actor"));
 }
 
 void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -30,24 +30,21 @@ void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 
 	if (OtherActor == PlayerCharacter)
 	{
-		if (ChildActorComponent == nullptr)
-			return;
-		
-		if (ChildActorComponent->bVisible)
-		{
-			// 현재 Spawn된 WeaponId를 받아서 장착부근에 어떤 무기인지 넘겨주기
-			PlayerCharacter->EquipWeapon(WeaponPreset.WeaponAsset, WeaponPreset.WeaponKind, CurSpawnedWeaponId);
-			ChildActorComponent->SetVisibility(false, false);
-			GetWorld()->GetTimerManager().SetTimer(SpawnTimeHandle, this, &AItemTrigger::VisibleTimer, 5.f, false);
-		}
+		//if (ChildActorComponent->bVisible)
+		//{
+		//	// 현재 Spawn된 WeaponId를 받아서 장착부근에 어떤 무기인지 넘겨주기
+		//	PlayerCharacter->EquipWeapon(WeaponPreset.WeaponAsset, WeaponPreset.WeaponKind);
+		//	ChildActorComponent->SetVisibility(false, false);
+		//	GetWorld()->GetTimerManager().SetTimer(SpawnTimeHandle, this, &AItemTrigger::VisibleTimer, 5.f, false);
+		//}
 
 	}	
 }
 
-void AItemTrigger::VisibleTimer()
-{
-	ChildActorComponent->SetVisibility(true, false);
-}
+//void AItemTrigger::VisibleTimer()
+//{
+//	ChildActorComponent->SetVisibility(true, false);
+//}
 
 // Called when the game starts or when spawned
 void AItemTrigger::BeginPlay()
@@ -55,11 +52,9 @@ void AItemTrigger::BeginPlay()
 	Super::BeginPlay();
 
 	TPSGameMode = GetWorld()->GetAuthGameMode<ATPSGameModeBase>();
-	CurSpawnedWeaponId = TPSGameMode->WeaponId;
-	
+
 	PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());	// 일단 냅두기
-	
 }
 
 // Called every frame
@@ -67,15 +62,15 @@ void AItemTrigger::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	RotationAngle += DeltaSeconds * 0.06f;
+	//RotationAngle += DeltaSeconds * 0.06f;
 
-	FRotator WeaponRotation = FRotator::ZeroRotator;
-	WeaponRotation.Yaw = RotationAngle;
+	//FRotator WeaponRotation = FRotator::ZeroRotator;
+	//WeaponRotation.Yaw = RotationAngle;
 
-	if (ChildActorComponent == nullptr)
-		return;
+	//if (ChildActorComponent == nullptr)
+	//	return;
 
-	ChildActorComponent->AddRelativeRotation(WeaponRotation);
+	//ChildActorComponent->AddRelativeRotation(WeaponRotation);
 }
 
 

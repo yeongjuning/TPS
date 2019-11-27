@@ -51,8 +51,5 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	virtual void Attack_Implementation() override;
 
-	UFUNCTION(BlueprintCallable)
-	virtual void StopAttack_Implementation() override;
-
 	virtual void BeginPlay() override;
 };

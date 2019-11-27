@@ -20,11 +20,6 @@ void AEnemyCharacter::Attack_Implementation()
 	Super::Attack_Implementation();
 }
 
-void AEnemyCharacter::StopAttack_Implementation()
-{
-	Super::StopAttack_Implementation();
-}
-
 void AEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

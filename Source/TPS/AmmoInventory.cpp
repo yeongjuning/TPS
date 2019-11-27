@@ -9,13 +9,13 @@ AAmmoInventory::AAmmoInventory()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-float AAmmoInventory::GetMaxAmmo()
+int32 AAmmoInventory::GetMaxAmmo()
 {
-	MaxAmmo.Add(EWeaponKind::Rifle, 30.0f);
-	MaxAmmo.Add(EWeaponKind::Knife, 1.0f);
-	MaxAmmo.Add(EWeaponKind::Grenade, 3.0f);
+	MaxAmmo.Add(EWeaponKind::Rifle, 30);
+	MaxAmmo.Add(EWeaponKind::Knife, 1);
+	MaxAmmo.Add(EWeaponKind::Grenade, 3);
 
-	for (TMap<EWeaponKind, float>::TIterator it = MaxAmmo.CreateIterator(); it; ++it)
+	for (TMap<EWeaponKind, int32>::TIterator it = MaxAmmo.CreateIterator(); it; ++it)
 	{
 		MaxAmmoKey = it->Key;
 		MaxAmmoVal = it->Value;
@@ -24,13 +24,13 @@ float AAmmoInventory::GetMaxAmmo()
 	return MaxAmmoVal;
 }
 
-float AAmmoInventory::GetTotalAmmoAmount()
+int32 AAmmoInventory::GetTotalAmmoAmount()
 {
-	TotalAmmoAmount.Add(EWeaponKind::Rifle, 150.0f);
-	TotalAmmoAmount.Add(EWeaponKind::Knife, 1.0f);
-	TotalAmmoAmount.Add(EWeaponKind::Grenade, 3.0f);
+	TotalAmmoAmount.Add(EWeaponKind::Rifle, 150);
+	TotalAmmoAmount.Add(EWeaponKind::Knife, 1);
+	TotalAmmoAmount.Add(EWeaponKind::Grenade, 3);
 
-	for (TMap<EWeaponKind, float>::TIterator it = TotalAmmoAmount.CreateIterator(); it; ++it)
+	for (TMap<EWeaponKind, int32>::TIterator it = TotalAmmoAmount.CreateIterator(); it; ++it)
 	{
 		ToTalAmmoKey = it->Key;
 		TotalAmmoAmountVal = it->Value;
@@ -39,37 +39,35 @@ float AAmmoInventory::GetTotalAmmoAmount()
 	return TotalAmmoAmountVal;
 }
 
-//// todo:: 각 무기 액터로 옮기기
-//TMap<EWeaponKind, int32> AAmmoInventory::GetMagazineCount()
-//{
-//	MagazineCount.Add(EWeaponKind::Rifle, 5.0f);
-//	MagazineCount.Add(EWeaponKind::Knife, 1.0f);
-//	MagazineCount.Add(EWeaponKind::Grenade, 0.0f);
-//
-//	for (TMap<EWeaponKind, int32>::TIterator it = MagazineCount.CreateIterator(); it; ++it)
-//	{
-//		EWeaponKind Key = it->Key;
-//		float MagazineCountVal = it->Value;
-//	}
-//
-//	return MagazineCount;
-//}
+int32 AAmmoInventory::GetAmmo(EWeaponKind WeaponKind) const
+{
+	if (AmmoInventory.Contains(WeaponKind) == false)
+		return 0;
 
-//// todo :: Rifle에 그냥 넣어주기
-//TMap<EWeaponKind, float> AAmmoInventory::GetConsumeAmount()
-//{
-//	ConsumeAmount.Add(EWeaponKind::Rifle, 1.0f);
-//	ConsumeAmount.Add(EWeaponKind::Knife, 0.0f);
-//	ConsumeAmount.Add(EWeaponKind::Grenade, 1.0f);
-//
-//	for (TMap<EWeaponKind, float>::TIterator it = ConsumeAmount.CreateIterator(); it; ++it)
-//	{
-//		EWeaponKind Key = it->Key;
-//		float ConsumeAmount = it->Value;
-//	}
-//
-//	return ConsumeAmount;
-//}
+	return AmmoInventory[WeaponKind];
+}
+
+void AAmmoInventory::AddAmmo(EWeaponKind WeaponKind, int32 AddAmmo)
+{
+	if (AmmoInventory.Contains(WeaponKind) == false)
+		AmmoInventory.Add(WeaponKind, AddAmmo);
+	else
+		AmmoInventory[WeaponKind] += AddAmmo;
+}
+
+int32 AAmmoInventory::ConsumeAmmo(EWeaponKind WeaponKind, int32 MagazineCount)
+{
+	if (AmmoInventory.Contains(WeaponKind) == false)
+	{
+		return 0;
+	}
+	else
+	{
+		int Ammo = FMath::Min(AmmoInventory[WeaponKind], MagazineCount);
+		AmmoInventory[WeaponKind] -= Ammo;
+		return Ammo;
+	}
+}
 
 
 

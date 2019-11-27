@@ -10,7 +10,7 @@ APlayerCharacter::APlayerCharacter()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(FName(TEXT("Camera Boom")));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->RelativeRotation = FRotator(-45.0f, 0.0f, 0.0f);
-	CameraBoom->TargetArmLength = 800.0f;
+	CameraBoom->TargetArmLength = 600.0f;
 	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->CameraLagSpeed = 2.5f;
 	CameraBoom->SetAbsolute(false, true, false);
@@ -19,38 +19,10 @@ APlayerCharacter::APlayerCharacter()
 	CameraBoom->bInheritRoll = false;
 	CameraBoom->bInheritYaw = false;
 
+	CameraBoom->bDoCollisionTest = false;
+
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(FName(TEXT("Main Camera")));
 	CameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-
-	ChildWeapon = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon Child Actor Component"));
-	ChildWeapon->SetupAttachment(GetMesh());
-}
-
-void APlayerCharacter::EquipWeapon(TSubclassOf<AWeaponBase> WeaponBase, EWeaponKind WeaponKind, FName WeaponId)
-{
-	// WeaponId는 Debug용으로 임시로 매개변수 받아옴 (차후에 필요할 수도 있어서 안지움)
-	UE_LOG(LogTemp, Log, TEXT("%s"), *(WeaponId.ToString()));
-
-	uint8 EWapInt = static_cast<uint8>(WeaponKind);
-	UE_LOG(LogTemp, Log, TEXT("%d"), EWapInt);
-	
-	FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget,
-		EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-
-	//switch (EWapInt)
-	//{
-	//case 0:
-	//	Weapon->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Rifle_Socket"));
-	//	break;
-	//case 1:
-	//	Weapon->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Knife_Socket"));
-	//	break;
-	//case 2:
-	//	Weapon->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Grenade_Socket"));
-	//	break;
-	//default:
-	//	break;
-	//}
 }
 
 void APlayerCharacter::Attack_Implementation()
@@ -58,19 +30,9 @@ void APlayerCharacter::Attack_Implementation()
 	Super::Attack_Implementation();
 }
 
-void APlayerCharacter::StopAttack_Implementation()
-{
-	Super::StopAttack_Implementation();
-}
-
 void APlayerCharacter::Reload_Implementation()
 {
 	Super::Reload_Implementation();
-}
-
-void APlayerCharacter::StopReload_Implementation()
-{
-	Super::StopReload_Implementation();
 }
 
 void APlayerCharacter::Dead_Implementation()

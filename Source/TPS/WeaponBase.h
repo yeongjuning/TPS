@@ -5,7 +5,6 @@
 #include "EngineMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Engine/DataTable.h"
-#include "AttackComponent.h"
 
 #include "WeaponBase.generated.h"
 
@@ -37,8 +36,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName DisplayName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TSubclassOf<AWeaponBase> WeaponAsset;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AWeaponBase> WeaponActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MagazineCount = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AttackSpeed = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackRange = 0.0f;
@@ -50,7 +55,7 @@ public:
 	float FireDelay = 0.0f;
 };
 
-UCLASS(Abstract)
+UCLASS()
 class TPS_API AWeaponBase : public AActor
 {
 	GENERATED_BODY()
@@ -58,6 +63,11 @@ class TPS_API AWeaponBase : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AWeaponBase();
+
+	FWeaponPreset WeaponPreset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Magazine = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* WeaponTable;
@@ -90,6 +100,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UTPSGameInstance* GetTPSGameInstance() const { return TPSGameInstance; }
 
+	UFUNCTION(BlueprintCallable)
+	UBoxComponent* GetBoxComponent() const { return BoxComponent; }
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintGetter = GetAmmo, Category = "Ammo Info")
@@ -102,22 +115,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	FWeaponPreset* WeaponPreset;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintGetter = GetTPSGameInstance)
 	UTPSGameInstance* TPSGameInstance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ATPSCharacter* TPSPlayerCharacter;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UAttackComponent* AttackComponent;
-
-private:
-
-	UPROPERTY(VisibleAnywhere)
-	FString WeaponName;
-
-	//UPROPERTY(VisibleAnywhere)
-	//float RotationAngle = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintGetter = GetBoxComponent)
+	UBoxComponent* BoxComponent;
 };

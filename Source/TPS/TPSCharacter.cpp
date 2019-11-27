@@ -11,23 +11,24 @@ ATPSCharacter::ATPSCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(FName(TEXT("Attack Component")));
-	
+	AttackComponent->SetupAttachment(GetMesh(), TEXT("Weapon Actor"));
+
 	Weapon = nullptr;
 }
 
 void ATPSCharacter::Attack_Implementation()
 {
-	AttackComponent->Attack();
-
-	if (IsValid(Weapon))
-	{
-		Weapon->FireAndAttack();
-	}
+	AttackComponent->Attacking();
 }
 
-void ATPSCharacter::StopAttack_Implementation()
+void ATPSCharacter::Reload_Implementation()
 {
-	AttackComponent->StopAttack();
+	AttackComponent->StartReload();
+}
+
+void ATPSCharacter::CompleteReload_Implementation()
+{
+	AttackComponent->CompleteReload();
 }
 
 void ATPSCharacter::Dead_Implementation()
@@ -37,17 +38,6 @@ void ATPSCharacter::Dead_Implementation()
 	EGamePlayingState GamePlayingState = EGamePlayingState::GameOver;
 }
 
-void ATPSCharacter::Reload_Implementation()
-{
-	bIsReload = true;
-	GetWorldTimerManager().SetTimer(ReloadTimerHandler, this, &ATPSCharacter::StopReload, 0.8f);
-}
-
-void ATPSCharacter::StopReload_Implementation()
-{
-	UE_LOG(LogTemp, Log, TEXT("StopReload"));
-}
-
 // Called when the game starts or when spawned
 void ATPSCharacter::BeginPlay()
 {
@@ -55,7 +45,8 @@ void ATPSCharacter::BeginPlay()
 
 	CharStatus = NewObject<UCharacterStatus>(this, TEXT("Character Status"));
 
-	CurHP = CharStatus->GetCurrentHealth();
+	if (IsValid(CharStatus))
+		CurHP = CharStatus->GetCurrentHealth();
 }
 
 // Called every frame
@@ -86,11 +77,6 @@ float ATPSCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEv
 void ATPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
-void ATPSCharacter::OnReloadTimerComplete()
-{
-	bIsReload = false;
 }
 
 void ATPSCharacter::OnDeathTimerComplete()

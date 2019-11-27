@@ -25,21 +25,19 @@ public:
 	// Sets default values for this character's properties
 	ATPSCharacter();
 
+	// 그냥 행동만 보여주기 위한 함수
+	// 실질적인 행동은 AttackComponent에서 실행
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Attack();
 	virtual void Attack_Implementation();
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void StopAttack();
-	virtual void StopAttack_Implementation();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Reload();
 	virtual void Reload_Implementation();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void StopReload();
-	virtual void StopReload_Implementation();
+	void CompleteReload();
+	virtual void CompleteReload_Implementation();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Dead();
@@ -53,6 +51,8 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	float CurStamina = 0.0f;
 
+public:
+
 	UFUNCTION(BlueprintCallable)
 	UAttackComponent* GetAttackComponent() const { return AttackComponent; }
 
@@ -65,23 +65,15 @@ public:
 public:
 
 	UFUNCTION(BlueprintCallable)
-	bool IsReload() const { return bIsReload; }
-
-	UFUNCTION(BlueprintCallable)
-	bool IsStopReload() const { return !bIsReload; }
-
-	UFUNCTION(BlueprintCallable)
 	bool IsDead() const { return bIsDead; }
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, BlueprintGetter = IsReload, Category = "Possible Behavior")
-	bool bIsReload = false;
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, BlueprintGetter = IsDead, Category = "Possible Behavior")
 	bool bIsDead = false;
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 public:	
 	// Called every frame
@@ -104,14 +96,11 @@ public:
 	UFUNCTION()
 	void OnDeathTimerComplete();
 
-	FTimerHandle ReloadTimerHandler;
-	UFUNCTION()
-	void OnReloadTimerComplete();
-
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), BlueprintGetter = GetStatus)
 	UCharacterStatus* CharStatus;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), BlueprintGetter = GetAttackComponent)
 	UAttackComponent* AttackComponent;
+
 };

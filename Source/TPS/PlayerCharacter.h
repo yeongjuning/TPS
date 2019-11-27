@@ -21,12 +21,6 @@ public:
 	
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }
-	FORCEINLINE UChildActorComponent* GetChildWeapon() const { return ChildWeapon; }
-	
-public:
-
-	UFUNCTION(BlueprintCallable)
-	void EquipWeapon(TSubclassOf<AWeaponBase> WeaponBase, EWeaponKind WeaponKind, FName WeaponId);
 
 protected:
 
@@ -34,13 +28,7 @@ protected:
 	virtual void Attack_Implementation() override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void StopAttack_Implementation() override;
-
-	UFUNCTION(BlueprintCallable)
 	virtual void Reload_Implementation() override;
-
-	UFUNCTION(BlueprintCallable)
-	virtual void StopReload_Implementation() override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Dead_Implementation() override;
@@ -52,9 +40,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UChildActorComponent* ChildWeapon;
 
 protected:
 

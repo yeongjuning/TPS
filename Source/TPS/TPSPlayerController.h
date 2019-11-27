@@ -70,13 +70,13 @@ protected:
 	void Reload();
 
 	UFUNCTION()
-	void StopReload();
+	void CompleteReload();
 
 	UFUNCTION()
 	void Attack();
 
-	UFUNCTION()
-	void StopAttack();
+	//UFUNCTION()
+	//void StopAttack();
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;

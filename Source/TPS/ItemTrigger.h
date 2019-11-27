@@ -7,6 +7,7 @@
 #include "PlayerCharacter.h"
 #include "TPSGameInstance.h"
 #include "WeaponBase.h"
+#include "AttackComponent.h"
 
 #include "ItemTrigger.generated.h"
 
@@ -22,9 +23,8 @@ public:
 	AItemTrigger();
 
 	FORCEINLINE AWeaponBase* GetWeapon() const { return Weapon; }
-	/*FORCEINLINE TSubclassOf<AWeaponBase*> GetWeaponClass() const { return TWeaponClass; }*/
 	FORCEINLINE UBoxComponent* GetBoxCollision() const { return BoxCollision; }
-	FORCEINLINE UChildActorComponent* GetChildActorComponent() const { return ChildActorComponent; }
+	FORCEINLINE UAttackComponent* GetAttackComponent() const { return AttackComponent; }
 
 public:
 	// Called every frame
@@ -39,8 +39,8 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-	UFUNCTION()
-	void VisibleTimer();
+	//UFUNCTION()
+	//void VisibleTimer();
 
 protected:
 	// Called when the game starts or when spawned
@@ -56,13 +56,7 @@ protected:
 	UBoxComponent* BoxCollision;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UChildActorComponent* ChildActorComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	APlayerCharacter* PlayerCharacter;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	//TArray<TSubclassOf<AWeaponBase*>> TWeaponClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	AWeaponBase* Weapon;
@@ -71,11 +65,11 @@ protected:
 
 private:
 
-	UPROPERTY(VisibleAnywhere)
-	float RotationAngle = 0.0f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UAttackComponent* AttackComponent;
 
 	UPROPERTY(VisibleAnywhere)
-	FName CurSpawnedWeaponId;
+	float RotationAngle = 0.0f;
 
 	FWeaponPreset WeaponPreset;
 };

@@ -33,17 +33,28 @@ void ATPSGameModeBase::SpawnTrigger()
 {
 	UClass* TriggerClass= AItemTrigger::StaticClass();
 	AItemTrigger* Trigger = GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, GetRandomWeaponTransform(), Parameters);
-	UChildActorComponent* ChildActorComponent = Trigger->GetChildActorComponent();
 	
-	if (TPSGameInstance->FindWeaponPreset(WeaponId, Preset))
+	//UChildActorComponent* ChildActorComponent = Trigger->GetChildActorComponent();
+
+	//if (TPSGameInstance->FindWeaponPreset(WeaponId, Preset))
+	//{
+	//	ChildActorComponent->SetChildActorClass(Preset.WeaponAsset);
+	//}
+	//else
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("WeaponPreset Serch Failed"));
+	//	return;
+	//}
+
+	UAttackComponent* WeaponActorComponent = Trigger->GetAttackComponent();
+	
+	CurSpawnedWeaponId = TPSGameInstance->GetRandomWeaponId();
+	if (TPSGameInstance->FindWeaponPreset(CurSpawnedWeaponId, Preset))
 	{
-		ChildActorComponent->SetChildActorClass(Preset.WeaponAsset);
+		FVector NewVector = FVector::ZeroVector;
+		WeaponActorComponent->SetRelativeLocation(NewVector, false);
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("WeaponPreset Serch Failed"));
-		return;
-	}
+	
 }
 
 /**********************************EnemySpawn****************************************/
@@ -80,7 +91,6 @@ void ATPSGameModeBase::BeginPlay()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWeaponSpawner::StaticClass(), WapSpawnPoints);
 	
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
-	WeaponId = TPSGameInstance->GetRandomWeaponId();
-
+	
 	SpawnTrigger();
 }

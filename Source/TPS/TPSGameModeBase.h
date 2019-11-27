@@ -7,9 +7,9 @@
 #include "WeaponBase.h"
 #include "AmmoInventory.h"
 #include "WeaponSpawner.h"
-
 #include "TPSGameInstance.h"
 #include "EnemySpawner.h"
+
 #include "TPSGameModeBase.generated.h"
 
 class AItemTrigger;
@@ -24,8 +24,8 @@ class TPS_API ATPSGameModeBase : public AGameModeBase
 public:
 	ATPSGameModeBase();
 
-	UPROPERTY(VisibleAnywhere)
-	FName WeaponId;
+	UFUNCTION(BlueprintCallable)
+	FName GetCurrentSpawnedWeaponId() const { return CurSpawnedWeaponId; }
 
 protected:
 
@@ -91,4 +91,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*> EnemySpawnPoints;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), BlueprintGetter = GetCurrentSpawnedWeaponId)
+	FName CurSpawnedWeaponId;
 };

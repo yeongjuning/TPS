@@ -50,6 +50,7 @@ void ATPSPlayerController::Run()
 	IsPlaying();
 	DoesPlayerExist();
 
+	UE_LOG(LogTemp, Log, TEXT("Run"));
 	GetCharStatus()->bCanThePlayerRun = true;
 	GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 }
@@ -59,6 +60,7 @@ void ATPSPlayerController::StopRun()
 	IsPlaying();
 	DoesPlayerExist();
 
+	UE_LOG(LogTemp, Log, TEXT("StopRun"));
 	GetCharStatus()->bCanThePlayerRun = false;
 	GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 }
@@ -71,12 +73,12 @@ void ATPSPlayerController::Reload()
 	GetTPSPlayer()->Reload();
 }
 
-void ATPSPlayerController::StopReload()
+void ATPSPlayerController::CompleteReload()
 {
 	IsPlaying();
 	DoesPlayerExist();
 
-	GetTPSPlayer()->StopReload();
+	GetTPSPlayer()->CompleteReload();
 }
 
 void ATPSPlayerController::Attack()
@@ -84,31 +86,32 @@ void ATPSPlayerController::Attack()
 	IsPlaying();
 	DoesPlayerExist();
 
-	UE_LOG(LogTemp, Log, TEXT("Attack"));
-
-	GetAttackComponent()->bAttack = true;
+	GetTPSPlayer()->Attack();
 }
 
-void ATPSPlayerController::StopAttack()
-{
-	IsPlaying();
-	DoesPlayerExist();
-
-	UE_LOG(LogTemp, Log, TEXT("Stop Attack"));
-
-	GetAttackComponent()->bAttack = false;
-}
+//void ATPSPlayerController::StopAttack()
+//{
+//	IsPlaying();
+//	DoesPlayerExist();
+//
+//	UE_LOG(LogTemp, Log, TEXT("Stop Attack"));
+//
+//	GetAttackComponent()->bAttack = false;
+//}
 
 void ATPSPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// TODO :: CharacterStatus에 return 값이 bool값인 것으로 옮겨놓기
 	if (GetCharStatus()->bCanThePlayerRun)
-		GetCharStatus()->StaminaManager(GetTPSPlayer()->CurStamina, true);
+	{
+		GetCharStatus()->StaminaManager(GetTPSPlayer()->CurStamina);
+	}
 	else
-		GetCharStatus()->StaminaManager(GetTPSPlayer()->CurStamina, false);
-	
+	{
+		GetCharStatus()->StaminaManager(GetTPSPlayer()->CurStamina);
+	}
+
 	RotValByMouseRot();
 }
 
@@ -143,8 +146,8 @@ void ATPSPlayerController::BeginPlay()
 
 	InputComponent->BindAction(TEXT("Attack"),
 		EInputEvent::IE_Pressed, this, &ATPSPlayerController::Attack);
-	InputComponent->BindAction(TEXT("StopAttack"),
-		EInputEvent::IE_Released, this, &ATPSPlayerController::StopAttack);
+	//InputComponent->BindAction(TEXT("StopAttack"),
+	//	EInputEvent::IE_Released, this, &ATPSPlayerController::StopAttack);
 
 	InputComponent->BindAxis(TEXT("Move Forward"), this, &ATPSPlayerController::MoveForward);
 	InputComponent->BindAxis(TEXT("Move Right"), this, &ATPSPlayerController::MoveRight);

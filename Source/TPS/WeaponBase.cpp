@@ -11,6 +11,11 @@ AWeaponBase::AWeaponBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	RootComponent = BoxComponent;
+	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	BoxComponent->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 }
 
 void AWeaponBase::FireAndAttack_Implementation()
@@ -25,22 +30,10 @@ void AWeaponBase::BeginPlay()
 
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
 	TPSPlayerCharacter = Cast<ATPSCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	
-	AttackComponent = TPSPlayerCharacter->GetAttackComponent();
 }
 
 // Called every frame
 void AWeaponBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	//if (this == nullptr)
-	//	return;
-
-	//RotationAngle += DeltaSeconds * 0.06f;
-
-	//FRotator WeaponRotation = FRotator::ZeroRotator;
-	//WeaponRotation.Yaw = RotationAngle;
-
-	//this->SetActorRelativeRotation(WeaponRotation);
 }

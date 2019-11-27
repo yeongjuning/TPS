@@ -18,7 +18,7 @@ public:
 	UCharacterStatus();
 
 	UFUNCTION()
-	void StaminaManager(float& CurStamina, bool IsRunning);
+	void StaminaManager(float& CurStamina);
 
 	UFUNCTION()
 	float HealthManager(float DamageAmount, float& CurrentHP);
