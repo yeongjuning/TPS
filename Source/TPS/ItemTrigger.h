@@ -25,6 +25,7 @@ public:
 	FORCEINLINE AWeaponBase* GetWeapon() const { return Weapon; }
 	FORCEINLINE UBoxComponent* GetBoxCollision() const { return BoxCollision; }
 	FORCEINLINE UAttackComponent* GetAttackComponent() const { return AttackComponent; }
+	FORCEINLINE FName GetCurrentSpawnedWeaponId() const { return CurSpawnedWeaponId; }
 
 public:
 	// Called every frame
@@ -39,8 +40,8 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-	//UFUNCTION()
-	//void VisibleTimer();
+	UFUNCTION()
+	void VisibleTimer();
 
 protected:
 	// Called when the game starts or when spawned
@@ -61,6 +62,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	AWeaponBase* Weapon;
 
+	UFUNCTION(BlueprintCallable)
+	void WeaponSpawn(FName SpawnedId, FWeaponPreset Preset);
+
 	FTimerHandle SpawnTimeHandle;
 
 private:
@@ -72,4 +76,7 @@ private:
 	float RotationAngle = 0.0f;
 
 	FWeaponPreset WeaponPreset;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	FName CurSpawnedWeaponId;
 };

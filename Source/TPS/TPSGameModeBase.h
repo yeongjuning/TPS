@@ -24,13 +24,16 @@ class TPS_API ATPSGameModeBase : public AGameModeBase
 public:
 	ATPSGameModeBase();
 
-	UFUNCTION(BlueprintCallable)
-	FName GetCurrentSpawnedWeaponId() const { return CurSpawnedWeaponId; }
+	FORCEINLINE AItemTrigger* GetSpawnedTrigger() const { return SpawnedTrigger; }
+	FORCEINLINE FTransform GetWeaponTransform() const { return WeaponTransform; }
 
-protected:
+public:	// Weapon
 
 	UFUNCTION(BlueprintCallable)
 	int32 GetRandomWeaponSpawnPoint() const;
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetRandomWeaponSpawnCount();
 
 	UFUNCTION(BlueprintCallable)
 	FTransform GetRandomWeaponTransform();
@@ -38,7 +41,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void SpawnTrigger();
 
-protected:
+public:	// Enemy
 
 	UFUNCTION(BlueprintCallable)
 	int32 GetRandomEnemySpawnPoint() const;
@@ -50,9 +53,6 @@ protected:
 	void SpawnEnemy();
 
 protected:
-	
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Class")
-	TSubclassOf<AWeaponBase> WeaponClass;
 
 	UPROPERTY(VisibleAnywhere, Category = "Game Instance")
 	UTPSGameInstance* TPSGameInstance;
@@ -73,10 +73,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Enemy Spawn Transform")
 	FTransform RandomEnemySpawnTransform;
 
-protected:
-
 	UPROPERTY(VisibleAnywhere)
-	AWeaponBase* Weapon;
+	AItemTrigger* SpawnedTrigger;
 
 	virtual void BeginPlay() override;
 
@@ -92,6 +90,5 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*> EnemySpawnPoints;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), BlueprintGetter = GetCurrentSpawnedWeaponId)
-	FName CurSpawnedWeaponId;
+	FTransform WeaponTransform;
 };

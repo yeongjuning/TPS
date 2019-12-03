@@ -17,6 +17,14 @@ int32 ATPSGameModeBase::GetRandomWeaponSpawnPoint() const
 	return FMath::RandRange(0, WapSpawnPoints.Num() - 1);
 }
 
+// TODO TEST
+int32 ATPSGameModeBase::GetRandomWeaponSpawnCount()
+{
+	return int32();
+}
+
+// RandomCount
+
 // Spawned Weapon Trnasform
 FTransform ATPSGameModeBase::GetRandomWeaponTransform()
 {
@@ -31,30 +39,10 @@ FTransform ATPSGameModeBase::GetRandomWeaponTransform()
 // Trigger Spawn
 void ATPSGameModeBase::SpawnTrigger()
 {
+	WeaponTransform = GetRandomWeaponTransform();
+
 	UClass* TriggerClass= AItemTrigger::StaticClass();
-	AItemTrigger* Trigger = GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, GetRandomWeaponTransform(), Parameters);
-	
-	//UChildActorComponent* ChildActorComponent = Trigger->GetChildActorComponent();
-
-	//if (TPSGameInstance->FindWeaponPreset(WeaponId, Preset))
-	//{
-	//	ChildActorComponent->SetChildActorClass(Preset.WeaponAsset);
-	//}
-	//else
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("WeaponPreset Serch Failed"));
-	//	return;
-	//}
-
-	UAttackComponent* WeaponActorComponent = Trigger->GetAttackComponent();
-	
-	CurSpawnedWeaponId = TPSGameInstance->GetRandomWeaponId();
-	if (TPSGameInstance->FindWeaponPreset(CurSpawnedWeaponId, Preset))
-	{
-		FVector NewVector = FVector::ZeroVector;
-		WeaponActorComponent->SetRelativeLocation(NewVector, false);
-	}
-	
+	SpawnedTrigger = GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, WeaponTransform, Parameters);
 }
 
 /**********************************EnemySpawn****************************************/

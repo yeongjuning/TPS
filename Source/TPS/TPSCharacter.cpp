@@ -3,6 +3,9 @@
 
 #include "TPSCharacter.h"
 #include "WeaponBase.h"
+#include "AttackComponent.h"
+
+const int32 ATPSCharacter::MaxWeaponSlot = 3;
 
 // Sets default values
 ATPSCharacter::ATPSCharacter()
@@ -11,9 +14,108 @@ ATPSCharacter::ATPSCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(FName(TEXT("Attack Component")));
-	AttackComponent->SetupAttachment(GetMesh(), TEXT("Weapon Actor"));
+	AttackComponent->SetupAttachment(GetMesh());
 
 	Weapon = nullptr;
+}
+
+void ATPSCharacter::EquipWeapon(int32 SlotIdx, AWeaponBase* WeaponActor)
+{
+	if (EquipedWeapons.IsValidIndex(SlotIdx) == false)
+		return;
+
+	if (IsValid(WeaponActor) == false)
+		return;
+
+	//UBoxComponent* WeaponBoxComponent = Cast<UBoxComponent>(WeaponActor->GetRootComponent());
+	//WeaponBoxComponent->SetSimulatePhysics(false);
+	/*WeaponActor->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetIncludingScale);*/
+
+	FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget,
+		EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+
+	switch (SlotIdx)
+	{
+	case 0: 
+		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Rifle_Socket"));
+		break;
+	case 1:
+		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Knife_Socket"));
+		break;
+	case 2:
+		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Grenade_Socket"));
+		break;
+	default:
+		break;
+	}
+
+	EquipedWeapons[SlotIdx] = WeaponActor;
+	EquipedWeapons[SlotIdx]->Instigator = this;
+
+	OnChangeCurrentWeapon.Broadcast(WeaponActor, SlotIdx);
+}
+
+void ATPSCharacter::DropWeapon(int32 SlotIdx)
+{
+	if (EquipedWeapons.IsValidIndex(SlotIdx) == false)
+		return;
+
+	AWeaponBase* Weapon = EquipedWeapons[SlotIdx];
+	if (IsValid(Weapon))
+		return;
+	
+	Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+	//UBoxComponent* WeaponBoxComponent = Cast<UBoxComponent>(Weapon->GetRootComponent());
+	//WeaponBoxComponent->SetSimulatePhysics(true);
+	//WeaponBoxComponent->AddImpulse(FVector::UpVector * 1000.0f);
+	
+	EquipedWeapons[SlotIdx] = nullptr;
+	
+	CurrentWeaponSlot = -1;
+
+	for (int32 i = 0; i < EquipedWeapons.Num(); i++)
+	{
+		if (IsValid(EquipedWeapons[i]))
+		{
+			CurrentWeaponSlot = i;
+			return;
+		}
+	}
+}
+
+void ATPSCharacter::SetCurrentWeaponSlot(int32 SlotIdx)
+{
+	if (EquipedWeapons.IsValidIndex(SlotIdx) == false)
+		return;
+		
+	CurrentWeaponSlot = SlotIdx;
+}
+
+AWeaponBase* ATPSCharacter::GetWeapon(int32 SlotIdx) const
+{
+	if (EquipedWeapons.IsValidIndex(SlotIdx))
+		return EquipedWeapons[SlotIdx];
+	else
+		return nullptr;
+}
+
+AWeaponBase* ATPSCharacter::GetCurrentWeapon() const
+{
+	int32 Slot = GetCurrentWeaponSlot();
+
+	return GetWeapon(Slot);
+}
+
+float ATPSCharacter::GetAttackSpeed() const
+{
+	if (EquipedWeapons.IsValidIndex(CurrentWeaponSlot) == false)
+		return 0.0f;
+
+	if (IsValid(EquipedWeapons[CurrentWeaponSlot]) == false)
+		return 0.0f;
+
+	return EquipedWeapons[CurrentWeaponSlot]->WeaponPreset.AttackSpeed;
 }
 
 void ATPSCharacter::Attack_Implementation()
@@ -42,6 +144,8 @@ void ATPSCharacter::Dead_Implementation()
 void ATPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	EquipedWeapons.SetNum(MaxWeaponSlot);
 
 	CharStatus = NewObject<UCharacterStatus>(this, TEXT("Character Status"));
 

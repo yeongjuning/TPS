@@ -6,11 +6,13 @@
 #include "GameFramework/Character.h"
 #include "TPSGameState.h"
 #include "CharacterStatus.h"
-#include "AttackComponent.h"
 
 #include "TPSCharacter.generated.h"
 
 class AWeaponBase;
+class UAttackComponent;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWeaponChangeSignature, AWeaponBase*, ChangedWeapon, int32, SlotIndex);
 
 UCLASS()
 class TPS_API ATPSCharacter : public ACharacter
@@ -18,12 +20,48 @@ class TPS_API ATPSCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, BlueprintGetter = GetWeapon)
+
+	static const int32 MaxWeaponSlot;
+
+	// 무기가 변경될때 호출되는 이벤트 델리게이트
+	UPROPERTY(BlueprintAssignable)
+	FWeaponChangeSignature OnChangeCurrentWeapon;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	AWeaponBase* Weapon;
 
 public:
 	// Sets default values for this character's properties
 	ATPSCharacter();
+
+	UFUNCTION(BlueprintCallable)
+	void EquipWeapon(int32 SlotIdx, AWeaponBase* WeaponActor);
+
+	UFUNCTION(BlueprintCallable)
+	void DropWeapon(int32 SlotIdx);
+
+public:	// Weapon의 Slot과 관련된 함수 
+
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentWeaponSlot(int32 SlotIdx);
+
+	// 슬롯 번호에 장착된 무기 참조를 반환
+	UFUNCTION(BlueprintCallable)
+	AWeaponBase* GetWeapon(int32 SlotIdx) const;
+
+	// 현재 사용중인 무기 슬롯 번호를 반환
+	UFUNCTION(BlueprintCallable)
+	int32 GetCurrentWeaponSlot() const { return CurrentWeaponSlot; }
+
+	// 현재 사용중인 무기 참조 반환
+	UFUNCTION(BlueprintCallable)
+	AWeaponBase* GetCurrentWeapon() const;
+
+	// 현재 장착된 무기의 공격속도를 반환
+	UFUNCTION(BlueprintCallable)
+	float GetAttackSpeed() const;
+
+public:
 
 	// 그냥 행동만 보여주기 위한 함수
 	// 실질적인 행동은 AttackComponent에서 실행
@@ -58,9 +96,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UCharacterStatus* GetStatus() const { return CharStatus; }
-
-	UFUNCTION(BlueprintCallable)
-	AWeaponBase* GetWeapon() const { return Weapon; }
 
 public:
 
@@ -103,4 +138,11 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), BlueprintGetter = GetAttackComponent)
 	UAttackComponent* AttackComponent;
 
+private:
+
+	UPROPERTY(VisibleAnywhere, SaveGame)
+	TArray<AWeaponBase*> EquipedWeapons;
+
+	UPROPERTY(VisibleAnywhere, SaveGame, BlueprintGetter = GetCurrentWeaponSlot)
+	int32 CurrentWeaponSlot = 0;
 };

@@ -18,33 +18,41 @@ AItemTrigger::AItemTrigger()
 	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &AItemTrigger::OnOverlapBegin);
 
 	AttackComponent = CreateDefaultSubobject<UAttackComponent>(FName(TEXT("Attack Component")));
-	AttackComponent->SetupAttachment(BoxCollision, TEXT("Weapon Actor"));
+	AttackComponent->SetupAttachment(BoxCollision);
 }
 
 void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Log, TEXT("Overlap Trigger"));
-
 	if (PlayerCharacter == nullptr)
 		return;
 
 	if (OtherActor == PlayerCharacter)
 	{
-		//if (ChildActorComponent->bVisible)
-		//{
-		//	// 현재 Spawn된 WeaponId를 받아서 장착부근에 어떤 무기인지 넘겨주기
-		//	PlayerCharacter->EquipWeapon(WeaponPreset.WeaponAsset, WeaponPreset.WeaponKind);
-		//	ChildActorComponent->SetVisibility(false, false);
-		//	GetWorld()->GetTimerManager().SetTimer(SpawnTimeHandle, this, &AItemTrigger::VisibleTimer, 5.f, false);
-		//}
+		if (IsValid(Weapon))
+		{
+			uint8 SlotIdx = uint8(Weapon->WeaponKind);
+			
+			PlayerCharacter->EquipWeapon(SlotIdx, Weapon);
 
+			SetActorHiddenInGame(true);
+			SetActorEnableCollision(false);
+			SetActorTickEnabled(false);
+
+			GetWorld()->GetTimerManager().SetTimer(SpawnTimeHandle, this, &AItemTrigger::VisibleTimer, 5.f, false);
+		}
 	}	
 }
 
-//void AItemTrigger::VisibleTimer()
-//{
-//	ChildActorComponent->SetVisibility(true, false);
-//}
+void AItemTrigger::VisibleTimer()
+{	
+	// 임시방편
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+	SetActorTickEnabled(true);
+
+	// Respawn시 Random 위치 Weapon의 RandomId
+	WeaponSpawn(TPSGameInstance->GetRandomWeaponId(), WeaponPreset);
+}
 
 // Called when the game starts or when spawned
 void AItemTrigger::BeginPlay()
@@ -55,6 +63,21 @@ void AItemTrigger::BeginPlay()
 
 	PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());	// 일단 냅두기
+
+	CurSpawnedWeaponId = TPSGameInstance->GetRandomWeaponId();
+	WeaponSpawn(CurSpawnedWeaponId, WeaponPreset);
+}
+
+void AItemTrigger::WeaponSpawn(FName SpawnedId, FWeaponPreset Preset)
+{
+	if (TPSGameInstance->FindWeaponPreset(SpawnedId, Preset))
+	{
+		FActorSpawnParameters Parameters;
+		Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		Weapon = GetWorld()->SpawnActor<AWeaponBase>
+			(Preset.WeaponActor, TPSGameMode->GetWeaponTransform(), Parameters);
+	}
 }
 
 // Called every frame

@@ -12,10 +12,10 @@ AWeaponBase::AWeaponBase()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-	RootComponent = BoxComponent;
-	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	BoxComponent->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
+	//BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	//RootComponent = BoxComponent;
+	//BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//BoxComponent->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 }
 
 void AWeaponBase::FireAndAttack_Implementation()
