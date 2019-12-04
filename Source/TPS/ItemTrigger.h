@@ -25,7 +25,8 @@ public:
 	FORCEINLINE AWeaponBase* GetWeapon() const { return Weapon; }
 	FORCEINLINE UBoxComponent* GetBoxCollision() const { return BoxCollision; }
 	FORCEINLINE UAttackComponent* GetAttackComponent() const { return AttackComponent; }
-	FORCEINLINE FName GetCurrentSpawnedWeaponId() const { return CurSpawnedWeaponId; }
+	/*FORCEINLINE FName GetCurrentSpawnedWeaponId() const { return CurSpawnedWeaponId; }*/
+	/*FORCEINLINE FName GetCurrentSpawnedWeaponId() const { return CurSpawnedWeaponIds; }*/
 
 public:
 	// Called every frame
@@ -77,6 +78,6 @@ private:
 
 	FWeaponPreset WeaponPreset;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName CurSpawnedWeaponId;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	//FName CurSpawnedWeaponId;
 };

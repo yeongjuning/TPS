@@ -28,18 +28,32 @@ void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 
 	if (OtherActor == PlayerCharacter)
 	{
-		if (IsValid(Weapon))
+		for (int32 i = 0; i < TPSGameMode->SpawnCount; i++)
 		{
-			uint8 SlotIdx = uint8(Weapon->WeaponKind);
-			
-			PlayerCharacter->EquipWeapon(SlotIdx, Weapon);
+			if (TPSGameMode->Weapons.IsValidIndex(i))
+			{
+				uint8 SlotIdx = uint8(TPSGameMode->Weapons[i]->WeaponKind);
+				PlayerCharacter->EquipWeapon(SlotIdx, TPSGameMode->Weapons[i]);
 
-			SetActorHiddenInGame(true);
-			SetActorEnableCollision(false);
-			SetActorTickEnabled(false);
+				SetActorHiddenInGame(true);
+				SetActorEnableCollision(false);
+				SetActorTickEnabled(false);
 
-			GetWorld()->GetTimerManager().SetTimer(SpawnTimeHandle, this, &AItemTrigger::VisibleTimer, 5.f, false);
+				UE_LOG(LogTemp, Log, TEXT("Weapons[%d] EquipWeapon"), i);
+			}
 		}
+		//if (IsValid(Weapon))
+		//{
+		//	uint8 SlotIdx = uint8(Weapon->WeaponKind);
+		//	
+		//	PlayerCharacter->EquipWeapon(SlotIdx, Weapon);
+
+		//	SetActorHiddenInGame(true);
+		//	SetActorEnableCollision(false);
+		//	SetActorTickEnabled(false);
+
+		//	GetWorld()->GetTimerManager().SetTimer(SpawnTimeHandle, this, &AItemTrigger::VisibleTimer, 5.f, false);
+		//}
 	}	
 }
 
@@ -50,8 +64,8 @@ void AItemTrigger::VisibleTimer()
 	SetActorEnableCollision(true);
 	SetActorTickEnabled(true);
 
-	// Respawn시 Random 위치 Weapon의 RandomId
-	WeaponSpawn(TPSGameInstance->GetRandomWeaponId(), WeaponPreset);
+	//// Respawn시 Random 위치 Weapon의 RandomId
+	//WeaponSpawn(TPSGameInstance->GetRandomWeaponId(), WeaponPreset);
 }
 
 // Called when the game starts or when spawned
@@ -64,8 +78,8 @@ void AItemTrigger::BeginPlay()
 	PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());	// 일단 냅두기
 
-	CurSpawnedWeaponId = TPSGameInstance->GetRandomWeaponId();
-	WeaponSpawn(CurSpawnedWeaponId, WeaponPreset);
+	//CurSpawnedWeaponId = TPSGameInstance->GetRandomWeaponId();
+	//WeaponSpawn(CurSpawnedWeaponId, WeaponPreset);
 }
 
 void AItemTrigger::WeaponSpawn(FName SpawnedId, FWeaponPreset Preset)

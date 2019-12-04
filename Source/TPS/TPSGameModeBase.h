@@ -24,22 +24,33 @@ class TPS_API ATPSGameModeBase : public AGameModeBase
 public:
 	ATPSGameModeBase();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SpawnCount = 0;
+
+	UPROPERTY(EditAnywhere)
+	int32 CurrentCount = 0;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<AWeaponBase*> Weapons;
+
+public:
+
 	FORCEINLINE AItemTrigger* GetSpawnedTrigger() const { return SpawnedTrigger; }
 	FORCEINLINE FTransform GetWeaponTransform() const { return WeaponTransform; }
 
 public:	// Weapon
 
 	UFUNCTION(BlueprintCallable)
-	int32 GetRandomWeaponSpawnPoint() const;
-
-	UFUNCTION(BlueprintCallable)
 	int32 GetRandomWeaponSpawnCount();
 
 	UFUNCTION(BlueprintCallable)
-	FTransform GetRandomWeaponTransform();
+	FTransform GetRandomWeaponSpawnPoint();
 
 	UFUNCTION(BlueprintCallable)
-	void SpawnTrigger();
+	void RandomSpawnTrigger();
+
+	UFUNCTION(BlueprintCallable)
+	bool CheckEqulTransform(int32 TransIdx, int32 Count) const;
 
 public:	// Enemy
 
@@ -54,8 +65,16 @@ public:	// Enemy
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, Category = "Game Instance")
-	UTPSGameInstance* TPSGameInstance;
+	UFUNCTION(BlueprintCallable)
+	void WeaponsSpawn(int32 TriggerIdx, FName SpawnId, FWeaponPreset Preset);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<FName> CurSpawnedWeaponIds;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<AItemTrigger*> Triggers;
+
+	TArray<FTransform> RandTransform;
 
 protected:
 
@@ -78,11 +97,18 @@ protected:
 
 	virtual void BeginPlay() override;
 
+protected:
+
+	UPROPERTY(VisibleAnywhere, Category = "Game Instance")
+	UTPSGameInstance* TPSGameInstance;
+
 private:
 
-	FWeaponPreset Preset;
+	FWeaponPreset WeaponPreset;
 
 	FActorSpawnParameters Parameters;
+
+	FTransform WeaponTransform;
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*> WapSpawnPoints;
@@ -90,5 +116,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*> EnemySpawnPoints;
 
-	FTransform WeaponTransform;
+	UFUNCTION(BlueprintCallable)
+	void SetArraiesLength(int32 ArrLength);
 };

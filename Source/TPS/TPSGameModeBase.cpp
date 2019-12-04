@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "TPSGameModeBase.h"
@@ -11,40 +11,83 @@ ATPSGameModeBase::ATPSGameModeBase()
 
 /**********************************WeaponSpawn****************************************/
 
-// SpawnPoint
-int32 ATPSGameModeBase::GetRandomWeaponSpawnPoint() const
-{
-	return FMath::RandRange(0, WapSpawnPoints.Num() - 1);
-}
-
-// TODO TEST
+// TODO TEST :: ì›”ë“œì— ë°°ì¹˜ëœ SpawnPointë“¤ ì¤‘ì—ì„œ ëœë¤í•œ ê°¯ìˆ˜ë¡œ í•´ë‹¹ Pointì— Spawn	//
 int32 ATPSGameModeBase::GetRandomWeaponSpawnCount()
 {
-	return int32();
+	return FMath::RandRange(1, WapSpawnPoints.Num());
 }
 
-// RandomCount
-
-// Spawned Weapon Trnasform
-FTransform ATPSGameModeBase::GetRandomWeaponTransform()
+FTransform ATPSGameModeBase::GetRandomWeaponSpawnPoint()
 {
-	WapSpawnPoint = GetRandomWeaponSpawnPoint();
-
-	RandomWapSpawnTransform = WapSpawnPoints[WapSpawnPoint]->GetActorTransform();
-	Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	return RandomWapSpawnTransform;
+	return WapSpawnPoints[FMath::RandRange(0, WapSpawnPoints.Num() - 1)]->GetActorTransform();
 }
 
-// Trigger Spawn
-void ATPSGameModeBase::SpawnTrigger()
+void ATPSGameModeBase::RandomSpawnTrigger()
 {
-	WeaponTransform = GetRandomWeaponTransform();
+	SpawnCount = GetRandomWeaponSpawnCount();																																																																																																																								
+	SetArraiesLength(SpawnCount);
 
-	UClass* TriggerClass= AItemTrigger::StaticClass();
-	SpawnedTrigger = GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, WeaponTransform, Parameters);
+	for (int32 i = 0; i < SpawnCount; i++)
+	{
+		RandTransform[i] = GetRandomWeaponSpawnPoint();
+
+		if (RandTransform.IsValidIndex(i))
+		{	
+			if (CheckEqulTransform(i, SpawnCount))
+				break;
+
+			UE_LOG(LogTemp, Log, TEXT("%dë²ˆì§¸ Transform :: (X:%f), (Y:%f), (Z:%f)"), i,
+				RandTransform[i].GetLocation().X,
+				RandTransform[i].GetLocation().Y,
+				RandTransform[i].GetLocation().Z);
+
+			Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			UClass* TriggerClass = AItemTrigger::StaticClass();
+			Triggers[i] = GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, RandTransform[i], Parameters);
+			
+			CurSpawnedWeaponIds[i] = TPSGameInstance->GetRandomWeaponId();
+			WeaponsSpawn(i, CurSpawnedWeaponIds[i], WeaponPreset);
+		}
+	}
 }
 
+// ëœë¤ìœ¼ë¡œ ì±…ì •ëœ Countìˆ˜ ë§Œí¼ Spawnë¬ì„ ë•Œ, ê°™ì€ Transformì¸ì§€ í™•ì¸
+bool ATPSGameModeBase::CheckEqulTransform(int32 TransIdx, int32 Count) const
+{
+	if (TransIdx > 0 && Count > 1)
+	{
+		for (int32 i = 0; i < TransIdx; i++)
+		{
+			if (RandTransform[i].GetLocation() == RandTransform[TransIdx].GetLocation())
+				return true;	
+		}
+	}
+
+	return false;
+}
+
+void ATPSGameModeBase::WeaponsSpawn(int32 TriggerIdx, FName SpawnId, FWeaponPreset Preset)
+{
+	if (TPSGameInstance->FindWeaponPreset(SpawnId, Preset))
+	{
+		if (Weapons.IsValidIndex(TriggerIdx))
+		{
+			UE_LOG(LogTemp, Log, TEXT("WeaponSpawnIdx : %d"), TriggerIdx);
+			Weapons[TriggerIdx] = GetWorld()->SpawnActor<AWeaponBase>
+				(Preset.WeaponActor, RandTransform[TriggerIdx], Parameters);
+		}
+	}
+}
+
+void ATPSGameModeBase::SetArraiesLength(int32 ArrLength)
+{
+	RandTransform.SetNum(ArrLength);
+	CurSpawnedWeaponIds.SetNum(ArrLength);
+	Weapons.SetNum(ArrLength);
+	Triggers.SetNum(ArrLength);
+}
+//================================================================================//
 /**********************************EnemySpawn****************************************/
 
 int32 ATPSGameModeBase::GetRandomEnemySpawnPoint() const
@@ -64,10 +107,10 @@ FTransform ATPSGameModeBase::GetRandomEnemyTransform()
 
 void ATPSGameModeBase::SpawnEnemy()
 {
-	/** todo:: EnemyDataTable¿¡ ÀÖ´Â Row¼ø¼­´ë·Î Spawn
-	 * 1. °ÔÀÓÀÌ ½ÃÀÛÇÏ¸é ¸î ÃÊ µÚ Count¸¸Å­ Ã¹¹øÂ° Row°¡ Spawn
-	 * 2. ³ª¿À´Â EnemyÀÇ Count¸¦ ¸ğµÎ Á×ÀÌ¸é ´ÙÀ½ Row·Î ³Ñ¾Æ°¡¼­ Spawn
-	 * 3. ¸ğµç Row°¡ Á¾·áµÇ¸é SpawnÀ» ³¡³»°í Clear;
+	/** todo:: EnemyDataTableì— ìˆëŠ” Rowìˆœì„œëŒ€ë¡œ Spawn
+	 * 1. ê²Œì„ì´ ì‹œì‘í•˜ë©´ ëª‡ ì´ˆ ë’¤ Countë§Œí¼ ì²«ë²ˆì§¸ Rowê°€ Spawn
+	 * 2. ë‚˜ì˜¤ëŠ” Enemyì˜ Countë¥¼ ëª¨ë‘ ì£½ì´ë©´ ë‹¤ìŒ Rowë¡œ ë„˜ì•„ê°€ì„œ Spawn
+	 * 3. ëª¨ë“  Rowê°€ ì¢…ë£Œë˜ë©´ Spawnì„ ëë‚´ê³  Clear;
 	 */ 
 
 }
@@ -77,8 +120,9 @@ void ATPSGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWeaponSpawner::StaticClass(), WapSpawnPoints);
-	
+
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
-	
-	SpawnTrigger();
+
+	RandomSpawnTrigger();
+
 }
