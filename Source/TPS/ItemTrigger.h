@@ -22,11 +22,8 @@ public:
 	// Sets default values for this actor's properties
 	AItemTrigger();
 
-	FORCEINLINE AWeaponBase* GetWeapon() const { return Weapon; }
 	FORCEINLINE UBoxComponent* GetBoxCollision() const { return BoxCollision; }
 	FORCEINLINE UAttackComponent* GetAttackComponent() const { return AttackComponent; }
-	/*FORCEINLINE FName GetCurrentSpawnedWeaponId() const { return CurSpawnedWeaponId; }*/
-	/*FORCEINLINE FName GetCurrentSpawnedWeaponId() const { return CurSpawnedWeaponIds; }*/
 
 public:
 	// Called every frame
@@ -60,12 +57,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	APlayerCharacter* PlayerCharacter;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	AWeaponBase* Weapon;
-
-	UFUNCTION(BlueprintCallable)
-	void WeaponSpawn(FName SpawnedId, FWeaponPreset Preset);
-
 	FTimerHandle SpawnTimeHandle;
 
 private:
@@ -78,6 +69,6 @@ private:
 
 	FWeaponPreset WeaponPreset;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	//FName CurSpawnedWeaponId;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	int32 CurrentOverlapIndex = 0;
 };

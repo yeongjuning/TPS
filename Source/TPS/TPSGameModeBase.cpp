@@ -22,37 +22,36 @@ FTransform ATPSGameModeBase::GetRandomWeaponSpawnPoint()
 	return WapSpawnPoints[FMath::RandRange(0, WapSpawnPoints.Num() - 1)]->GetActorTransform();
 }
 
-void ATPSGameModeBase::RandomSpawnTrigger()
+void ATPSGameModeBase::RandomTriggerSpawn(int32 InputIndex, FTransform InputTransform)
 {
-	SpawnCount = GetRandomWeaponSpawnCount();																																																																																																																								
+	Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	UClass* TriggerClass = AItemTrigger::StaticClass();
+	Triggers[InputIndex] = GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, InputTransform, Parameters);
+}
+
+void ATPSGameModeBase::RandomWeaponSpawn()
+{
+	int32 SpawnCount = GetRandomWeaponSpawnCount();																																																																																																																								
 	SetArraiesLength(SpawnCount);
 
-	for (int32 i = 0; i < SpawnCount; i++)
+	for (SpawnIndex = 0; SpawnIndex < SpawnCount; SpawnIndex++)
 	{
-		RandTransform[i] = GetRandomWeaponSpawnPoint();
+		RandTransform[SpawnIndex] = GetRandomWeaponSpawnPoint();
 
-		if (RandTransform.IsValidIndex(i))
+		if (RandTransform.IsValidIndex(SpawnIndex))
 		{	
-			if (CheckEqulTransform(i, SpawnCount))
+			if (CheckEqulTransform(SpawnIndex, SpawnCount))
 				break;
 
-			UE_LOG(LogTemp, Log, TEXT("%d번째 Transform :: (X:%f), (Y:%f), (Z:%f)"), i,
-				RandTransform[i].GetLocation().X,
-				RandTransform[i].GetLocation().Y,
-				RandTransform[i].GetLocation().Z);
+			RandomTriggerSpawn(SpawnIndex, RandTransform[SpawnIndex]);
 
-			Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-			UClass* TriggerClass = AItemTrigger::StaticClass();
-			Triggers[i] = GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, RandTransform[i], Parameters);
-			
-			CurSpawnedWeaponIds[i] = TPSGameInstance->GetRandomWeaponId();
-			WeaponsSpawn(i, CurSpawnedWeaponIds[i], WeaponPreset);
+			CurSpawnedWeaponIds[SpawnIndex] = TPSGameInstance->GetRandomWeaponId();
+			WeaponsSpawn(SpawnIndex, CurSpawnedWeaponIds[SpawnIndex], WeaponPreset);
 		}
 	}
 }
 
-// 랜덤으로 책정된 Count수 만큼 Spawn됬을 때, 같은 Transform인지 확인
 bool ATPSGameModeBase::CheckEqulTransform(int32 TransIdx, int32 Count) const
 {
 	if (TransIdx > 0 && Count > 1)
@@ -123,6 +122,6 @@ void ATPSGameModeBase::BeginPlay()
 
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
 
-	RandomSpawnTrigger();
+	RandomWeaponSpawn();
 
 }

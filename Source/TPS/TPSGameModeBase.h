@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -22,10 +22,11 @@ class TPS_API ATPSGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 	
 public:
+
 	ATPSGameModeBase();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 SpawnCount = 0;
+	int32 SpawnIndex = 0;
 
 	UPROPERTY(EditAnywhere)
 	int32 CurrentCount = 0;
@@ -33,22 +34,25 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<AWeaponBase*> Weapons;
 
-public:
-
-	FORCEINLINE AItemTrigger* GetSpawnedTrigger() const { return SpawnedTrigger; }
-	FORCEINLINE FTransform GetWeaponTransform() const { return WeaponTransform; }
-
 public:	// Weapon
 
+	// Spawn할 Random 갯수 가져오는 함수
 	UFUNCTION(BlueprintCallable)
 	int32 GetRandomWeaponSpawnCount();
 
+	// 월드에 배치된 WeaponSpawner중에 Random으로 생성될 Point를 얻는 함수
 	UFUNCTION(BlueprintCallable)
 	FTransform GetRandomWeaponSpawnPoint();
 
+	// Trigger를 Spawn할 함수
 	UFUNCTION(BlueprintCallable)
-	void RandomSpawnTrigger();
+	void RandomTriggerSpawn(int32 InputIndex, FTransform InputTransform);
 
+	// WeaponActor의 값을 DataTable에서 받아 Random으로 Spawn하는 함수
+	UFUNCTION(BlueprintCallable)
+	void RandomWeaponSpawn();
+
+	// 랜덤으로 책정된 Count수 만큼 Spawn됬을 때, 같은 Transform인지 확인하는 함수
 	UFUNCTION(BlueprintCallable)
 	bool CheckEqulTransform(int32 TransIdx, int32 Count) const;
 
@@ -92,9 +96,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Enemy Spawn Transform")
 	FTransform RandomEnemySpawnTransform;
 
-	UPROPERTY(VisibleAnywhere)
-	AItemTrigger* SpawnedTrigger;
-
 	virtual void BeginPlay() override;
 
 protected:
@@ -108,14 +109,13 @@ private:
 
 	FActorSpawnParameters Parameters;
 
-	FTransform WeaponTransform;
-
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*> WapSpawnPoints;
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*> EnemySpawnPoints;
 
+	// Spawn에 필요한 모든 배열들의 동적인 길이를 Setting하는 함수
 	UFUNCTION(BlueprintCallable)
 	void SetArraiesLength(int32 ArrLength);
 };

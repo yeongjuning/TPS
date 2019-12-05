@@ -28,19 +28,16 @@ void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 
 	if (OtherActor == PlayerCharacter)
 	{
-		for (int32 i = 0; i < TPSGameMode->SpawnCount; i++)
+		if (TPSGameMode->Weapons.IsValidIndex(CurrentOverlapIndex))
 		{
-			if (TPSGameMode->Weapons.IsValidIndex(i))
-			{
-				uint8 SlotIdx = uint8(TPSGameMode->Weapons[i]->WeaponKind);
-				PlayerCharacter->EquipWeapon(SlotIdx, TPSGameMode->Weapons[i]);
+			uint8 SlotIdx = uint8(TPSGameMode->Weapons[CurrentOverlapIndex]->WeaponKind);
+			PlayerCharacter->EquipWeapon(SlotIdx, TPSGameMode->Weapons[CurrentOverlapIndex]);
 
-				SetActorHiddenInGame(true);
-				SetActorEnableCollision(false);
-				SetActorTickEnabled(false);
+			SetActorHiddenInGame(true);
+			SetActorEnableCollision(false);
+			SetActorTickEnabled(false);
 
-				UE_LOG(LogTemp, Log, TEXT("Weapons[%d] EquipWeapon"), i);
-			}
+			UE_LOG(LogTemp, Log, TEXT("Overlaped Weapon Index : %d"), CurrentOverlapIndex);
 		}
 		//if (IsValid(Weapon))
 		//{
@@ -77,21 +74,8 @@ void AItemTrigger::BeginPlay()
 
 	PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());	// 일단 냅두기
-
-	//CurSpawnedWeaponId = TPSGameInstance->GetRandomWeaponId();
-	//WeaponSpawn(CurSpawnedWeaponId, WeaponPreset);
-}
-
-void AItemTrigger::WeaponSpawn(FName SpawnedId, FWeaponPreset Preset)
-{
-	if (TPSGameInstance->FindWeaponPreset(SpawnedId, Preset))
-	{
-		FActorSpawnParameters Parameters;
-		Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		Weapon = GetWorld()->SpawnActor<AWeaponBase>
-			(Preset.WeaponActor, TPSGameMode->GetWeaponTransform(), Parameters);
-	}
+	
+	CurrentOverlapIndex = TPSGameMode->SpawnIndex;
 }
 
 // Called every frame
