@@ -128,10 +128,12 @@ public:
 public:
 
 	FTimerHandle DeathTimerHandler;
+
 	UFUNCTION()
 	void OnDeathTimerComplete();
 
 private:
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), BlueprintGetter = GetStatus)
 	UCharacterStatus* CharStatus;
 

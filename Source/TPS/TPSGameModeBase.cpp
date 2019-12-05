@@ -32,8 +32,8 @@ void ATPSGameModeBase::RandomTriggerSpawn(int32 InputIndex, FTransform InputTran
 
 void ATPSGameModeBase::RandomWeaponSpawn()
 {
-	int32 SpawnCount = GetRandomWeaponSpawnCount();																																																																																																																								
-	SetArraiesLength(SpawnCount);
+	int32 SpawnCount = GetRandomWeaponSpawnCount();																																																																																																																			
+	SetArrRelatedToWeaponSpawn(SpawnCount);
 
 	for (SpawnIndex = 0; SpawnIndex < SpawnCount; SpawnIndex++)
 	{
@@ -72,19 +72,24 @@ void ATPSGameModeBase::WeaponsSpawn(int32 TriggerIdx, FName SpawnId, FWeaponPres
 	{
 		if (Weapons.IsValidIndex(TriggerIdx))
 		{
-			UE_LOG(LogTemp, Log, TEXT("WeaponSpawnIdx : %d"), TriggerIdx);
 			Weapons[TriggerIdx] = GetWorld()->SpawnActor<AWeaponBase>
 				(Preset.WeaponActor, RandTransform[TriggerIdx], Parameters);
 		}
 	}
 }
 
-void ATPSGameModeBase::SetArraiesLength(int32 ArrLength)
+void ATPSGameModeBase::SetArrRelatedToWeaponSpawn(int32 ArrLength)
 {
 	RandTransform.SetNum(ArrLength);
 	CurSpawnedWeaponIds.SetNum(ArrLength);
 	Weapons.SetNum(ArrLength);
 	Triggers.SetNum(ArrLength);
+}
+
+void ATPSGameModeBase::VisibleTimer()
+{
+	UE_LOG(LogTemp, Log, TEXT("VisibleTimer 호출"));
+	RandomWeaponSpawn();
 }
 //================================================================================//
 /**********************************EnemySpawn****************************************/

@@ -38,9 +38,6 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-	UFUNCTION()
-	void VisibleTimer();
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -56,8 +53,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	APlayerCharacter* PlayerCharacter;
-
-	FTimerHandle SpawnTimeHandle;
 
 private:
 

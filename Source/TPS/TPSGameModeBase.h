@@ -67,6 +67,12 @@ public:	// Enemy
 	UFUNCTION(BlueprintCallable)
 	void SpawnEnemy();
 
+public:
+	FTimerHandle WeaponSpawnTimeHandle;
+
+	UFUNCTION()
+	void VisibleTimer();
+
 protected:
 
 	UFUNCTION(BlueprintCallable)
@@ -117,5 +123,5 @@ private:
 
 	// Spawn에 필요한 모든 배열들의 동적인 길이를 Setting하는 함수
 	UFUNCTION(BlueprintCallable)
-	void SetArraiesLength(int32 ArrLength);
+	void SetArrRelatedToWeaponSpawn(int32 ArrLength);
 };

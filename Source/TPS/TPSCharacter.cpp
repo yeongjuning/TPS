@@ -27,10 +27,6 @@ void ATPSCharacter::EquipWeapon(int32 SlotIdx, AWeaponBase* WeaponActor)
 	if (IsValid(WeaponActor) == false)
 		return;
 
-	//UBoxComponent* WeaponBoxComponent = Cast<UBoxComponent>(WeaponActor->GetRootComponent());
-	//WeaponBoxComponent->SetSimulatePhysics(false);
-	/*WeaponActor->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetIncludingScale);*/
-
 	FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget,
 		EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
 
@@ -66,10 +62,6 @@ void ATPSCharacter::DropWeapon(int32 SlotIdx)
 	
 	Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 
-	//UBoxComponent* WeaponBoxComponent = Cast<UBoxComponent>(Weapon->GetRootComponent());
-	//WeaponBoxComponent->SetSimulatePhysics(true);
-	//WeaponBoxComponent->AddImpulse(FVector::UpVector * 1000.0f);
-	
 	EquipedWeapons[SlotIdx] = nullptr;
 	
 	CurrentWeaponSlot = -1;

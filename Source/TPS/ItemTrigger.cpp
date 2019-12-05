@@ -31,6 +31,12 @@ void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 		if (TPSGameMode->Weapons.IsValidIndex(CurrentOverlapIndex))
 		{
 			uint8 SlotIdx = uint8(TPSGameMode->Weapons[CurrentOverlapIndex]->WeaponKind);
+			
+			/** TODO :: DropWeapon의 호출조건 :: <WeaponKind가 같으면서 Preset의 WeaponId가 다를 경우> 
+			 *	-> 장착되어 있는 EquipWeapons[SlotIndex]를 DropWeapon.
+			 *	-> CurrentOvelapIndex를 EquipWeapons[SlotIndex]로 등록
+			 */ 
+
 			PlayerCharacter->EquipWeapon(SlotIdx, TPSGameMode->Weapons[CurrentOverlapIndex]);
 
 			SetActorHiddenInGame(true);
@@ -38,31 +44,10 @@ void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 			SetActorTickEnabled(false);
 
 			UE_LOG(LogTemp, Log, TEXT("Overlaped Weapon Index : %d"), CurrentOverlapIndex);
+			
+			GetWorld()->GetTimerManager().SetTimer(TPSGameMode->WeaponSpawnTimeHandle, TPSGameMode, &ATPSGameModeBase::VisibleTimer, 5.f, false);
 		}
-		//if (IsValid(Weapon))
-		//{
-		//	uint8 SlotIdx = uint8(Weapon->WeaponKind);
-		//	
-		//	PlayerCharacter->EquipWeapon(SlotIdx, Weapon);
-
-		//	SetActorHiddenInGame(true);
-		//	SetActorEnableCollision(false);
-		//	SetActorTickEnabled(false);
-
-		//	GetWorld()->GetTimerManager().SetTimer(SpawnTimeHandle, this, &AItemTrigger::VisibleTimer, 5.f, false);
-		//}
 	}	
-}
-
-void AItemTrigger::VisibleTimer()
-{	
-	// 임시방편
-	SetActorHiddenInGame(false);
-	SetActorEnableCollision(true);
-	SetActorTickEnabled(true);
-
-	//// Respawn시 Random 위치 Weapon의 RandomId
-	//WeaponSpawn(TPSGameInstance->GetRandomWeaponId(), WeaponPreset);
 }
 
 // Called when the game starts or when spawned
