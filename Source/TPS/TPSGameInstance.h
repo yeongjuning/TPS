@@ -5,6 +5,7 @@
 #include "EngineMinimal.h"
 #include "Engine/GameInstance.h"
 #include "TPSGameState.h"
+#include "TPSCharacter.h"
 #include "PlayerCharacter.h"
 #include "CharacterStatus.h"
 #include "EnemyCharacter.h"
@@ -13,8 +14,8 @@
 
 #include "TPSGameInstance.generated.h"
 
-struct FWeaponPreset;
 class AWeaponBase;
+struct FWeaponPreset;
 
 UCLASS()
 class TPS_API UTPSGameInstance : public UGameInstance
@@ -33,6 +34,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FName GetRandomWeaponId() const;	
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FName GetWeaponId(int32 WeaponIdIndex) const;
+
 public:
 	
 	UFUNCTION(BlueprintCallable)
@@ -48,6 +52,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
 	APlayerCharacter* PlayerCharacter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	ATPSCharacter* TPSCharacter;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Status")
 	UCharacterStatus* CharacterStatus;

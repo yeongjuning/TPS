@@ -1,7 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "TPSCharacter.h"
+#include "TPSGameModeBase.h"
+#include "TPSGameInstance.h"
 #include "WeaponBase.h"
 #include "AttackComponent.h"
 
@@ -19,69 +21,13 @@ ATPSCharacter::ATPSCharacter()
 	Weapon = nullptr;
 }
 
-void ATPSCharacter::EquipWeapon(int32 SlotIdx, AWeaponBase* WeaponActor)
-{
-	if (EquipedWeapons.IsValidIndex(SlotIdx) == false)
-		return;
-
-	if (IsValid(WeaponActor) == false)
-		return;
-
-	FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget,
-		EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-
-	switch (SlotIdx)
-	{
-	case 0: 
-		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Rifle_Socket"));
-		break;
-	case 1:
-		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Knife_Socket"));
-		break;
-	case 2:
-		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Grenade_Socket"));
-		break;
-	default:
-		break;
-	}
-
-	EquipedWeapons[SlotIdx] = WeaponActor;
-	EquipedWeapons[SlotIdx]->Instigator = this;
-
-	OnChangeCurrentWeapon.Broadcast(WeaponActor, SlotIdx);
-}
-
-void ATPSCharacter::DropWeapon(int32 SlotIdx)
-{
-	if (EquipedWeapons.IsValidIndex(SlotIdx) == false)
-		return;
-
-	AWeaponBase* Weapon = EquipedWeapons[SlotIdx];
-	if (IsValid(Weapon))
-		return;
-	
-	Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-
-	EquipedWeapons[SlotIdx] = nullptr;
-	
-	CurrentWeaponSlot = -1;
-
-	for (int32 i = 0; i < EquipedWeapons.Num(); i++)
-	{
-		if (IsValid(EquipedWeapons[i]))
-		{
-			CurrentWeaponSlot = i;
-			return;
-		}
-	}
-}
-
 void ATPSCharacter::SetCurrentWeaponSlot(int32 SlotIdx)
 {
 	if (EquipedWeapons.IsValidIndex(SlotIdx) == false)
 		return;
 		
 	CurrentWeaponSlot = SlotIdx;
+	UE_LOG(LogTemp, Log, TEXT("Set Current WeaponSlot : %d"), CurrentWeaponSlot);
 }
 
 AWeaponBase* ATPSCharacter::GetWeapon(int32 SlotIdx) const
@@ -108,6 +54,23 @@ float ATPSCharacter::GetAttackSpeed() const
 		return 0.0f;
 
 	return EquipedWeapons[CurrentWeaponSlot]->WeaponPreset.AttackSpeed;
+}
+
+void ATPSCharacter::SetEquipedWeaponId(int32 WeaponIdsIndex, int32 SlotIdx)
+{
+	if (EquipedWeapons.IsValidIndex(SlotIdx) == false)
+		return;
+
+	WeaponIds[WeaponIdsIndex] = TPSGameInstance->GetWeaponId(SlotIdx + 1);
+	UE_LOG(LogTemp, Log, TEXT("EquipedWeaponIds->WeaponIds[%d] :: %s"), WeaponIdsIndex, *WeaponIds[WeaponIdsIndex].ToString());
+}
+
+FName ATPSCharacter::GetEquipedWeaponIds(int32 WeaponIdsIndex, int32 SlotIdx) const
+{
+	if (EquipedWeapons.IsValidIndex(SlotIdx))
+		return WeaponIds[WeaponIdsIndex];
+	else
+		return FName();
 }
 
 void ATPSCharacter::Attack_Implementation()
@@ -138,6 +101,10 @@ void ATPSCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	EquipedWeapons.SetNum(MaxWeaponSlot);
+	WeaponIds.SetNum(MaxWeaponSlot);
+
+	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
+	TPSGameMode = GetWorld()->GetAuthGameMode<ATPSGameModeBase>();
 
 	CharStatus = NewObject<UCharacterStatus>(this, TEXT("Character Status"));
 

@@ -4,6 +4,7 @@
 
 #include "EngineMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TPSCharacter.h"
 #include "PlayerCharacter.h"
 #include "TPSGameInstance.h"
 #include "WeaponBase.h"
@@ -30,13 +31,17 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION()
-		void OnOverlapBegin
-		(UPrimitiveComponent* OverlappedComp,
-			AActor* OtherActor,
-			UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex,
-			bool bFromSweep,
-			const FHitResult& SweepResult);
+	void OnOverlapBegin
+	(UPrimitiveComponent* OverlappedComp,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
+
+protected:
+	UFUNCTION(BlueprintCallable)
+	bool bIsTheSameWeapon(int32 Current, uint8 Slot) const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -66,4 +71,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 CurrentOverlapIndex = 0;
+
+private:
+
+	UFUNCTION(BlueprintCallable)
+	void SetSpawnedActorHidden();
 };

@@ -25,14 +25,13 @@ FTransform ATPSGameModeBase::GetRandomWeaponSpawnPoint()
 void ATPSGameModeBase::RandomTriggerSpawn(int32 InputIndex, FTransform InputTransform)
 {
 	Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	UClass* TriggerClass = AItemTrigger::StaticClass();
+	TriggerClass = AItemTrigger::StaticClass();
 	Triggers[InputIndex] = GetWorld()->SpawnActor<AItemTrigger>(TriggerClass, InputTransform, Parameters);
 }
 
 void ATPSGameModeBase::RandomWeaponSpawn()
 {
-	int32 SpawnCount = GetRandomWeaponSpawnCount();																																																																																																																			
+	int32 SpawnCount = GetRandomWeaponSpawnCount();
 	SetArrRelatedToWeaponSpawn(SpawnCount);
 
 	for (SpawnIndex = 0; SpawnIndex < SpawnCount; SpawnIndex++)
@@ -41,18 +40,18 @@ void ATPSGameModeBase::RandomWeaponSpawn()
 
 		if (RandTransform.IsValidIndex(SpawnIndex))
 		{	
-			if (CheckEqulTransform(SpawnIndex, SpawnCount))
+			if (CheckEqulRandomTransform(SpawnIndex, SpawnCount))
 				break;
 
-			RandomTriggerSpawn(SpawnIndex, RandTransform[SpawnIndex]);
-
-			CurSpawnedWeaponIds[SpawnIndex] = TPSGameInstance->GetRandomWeaponId();
-			WeaponsSpawn(SpawnIndex, CurSpawnedWeaponIds[SpawnIndex], WeaponPreset);
+			RandomTriggerSpawn(SpawnIndex, RandTransform[SpawnIndex]);					// Trigger 스폰
+			CurSpawnedWeaponIds[SpawnIndex] = TPSGameInstance->GetRandomWeaponId();		// WeaponId 가져오기
+			SetCurrentSpawnedIdIndex(SpawnIndex);										// 현재 Spawn된 WeaponId 셋팅
+			WeaponsSpawn(SpawnIndex, CurSpawnedWeaponIds[SpawnIndex], WeaponPreset);	// Id에 맞는 Weapon을 스폰
 		}
 	}
 }
 
-bool ATPSGameModeBase::CheckEqulTransform(int32 TransIdx, int32 Count) const
+bool ATPSGameModeBase::CheckEqulRandomTransform(int32 TransIdx, int32 Count) const
 {
 	if (TransIdx > 0 && Count > 1)
 	{
@@ -86,11 +85,37 @@ void ATPSGameModeBase::SetArrRelatedToWeaponSpawn(int32 ArrLength)
 	Triggers.SetNum(ArrLength);
 }
 
+//======================================================================//
+void ATPSGameModeBase::SetCurrentSpawnedIdIndex(int32 WeaponIdIndex)
+{
+	if (CurSpawnedWeaponIds.IsValidIndex(WeaponIdIndex) == false)
+		return;
+
+	CurrentSpawnedIndex = WeaponIdIndex;
+	UE_LOG(LogTemp, Log, TEXT("Set Current Spawned Index : %d"), CurrentSpawnedIndex);
+}
+
+FName ATPSGameModeBase::GetSpawnedId(int32 WeaponIdIndex) const
+{
+	if (CurSpawnedWeaponIds.IsValidIndex(WeaponIdIndex))
+		return CurSpawnedWeaponIds[WeaponIdIndex];
+	else
+		return FName();
+}
+
+FName ATPSGameModeBase::GetCurrentSpawnedId() const
+{
+	int32 Spawned = GetCurrentSpawnedIndex();
+
+	return GetSpawnedId(Spawned);
+}
+
 void ATPSGameModeBase::VisibleTimer()
 {
-	UE_LOG(LogTemp, Log, TEXT("VisibleTimer 호출"));
+	UE_LOG(LogTemp, Log, TEXT("!!!!!!!!!!VisibleTimer 호출!!!!!!!!!!!!!!"));
 	RandomWeaponSpawn();
 }
+
 //================================================================================//
 /**********************************EnemySpawn****************************************/
 
@@ -124,9 +149,8 @@ void ATPSGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWeaponSpawner::StaticClass(), WapSpawnPoints);
-
+	
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
-
+	
 	RandomWeaponSpawn();
-
 }

@@ -28,11 +28,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 SpawnIndex = 0;
 
-	UPROPERTY(EditAnywhere)
-	int32 CurrentCount = 0;
+public:
+
+	TArray<FTransform> RandTransform;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<AWeaponBase*> Weapons;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<FName> CurSpawnedWeaponIds;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<AItemTrigger*> Triggers;
 
 public:	// Weapon
 
@@ -54,7 +61,24 @@ public:	// Weapon
 
 	// 랜덤으로 책정된 Count수 만큼 Spawn됬을 때, 같은 Transform인지 확인하는 함수
 	UFUNCTION(BlueprintCallable)
-	bool CheckEqulTransform(int32 TransIdx, int32 Count) const;
+	bool CheckEqulRandomTransform(int32 TransIdx, int32 Count) const;
+	
+public:
+
+	// 현재 Spawn된 Weapon의 Id를 Set 해주는 Setter 함수
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentSpawnedIdIndex(int32 WeaponIdIndex);
+
+	// Index를 통한 Spawned된 Weapon의 Id를 찾는 Gettter 함수
+	UFUNCTION(BlueprintCallable)
+	FName GetSpawnedId(int32 WeaponIdIndex) const;
+
+	// 현재의 인덱스(CurrentSpawendIndex) 를 통해서 SpawnedId를 찾는 함수
+	UFUNCTION(BlueprintCallable)
+	FName GetCurrentSpawnedId() const;
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetCurrentSpawnedIndex() const { return CurrentSpawnedIndex; }
 
 public:	// Enemy
 
@@ -77,14 +101,6 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void WeaponsSpawn(int32 TriggerIdx, FName SpawnId, FWeaponPreset Preset);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<FName> CurSpawnedWeaponIds;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<AItemTrigger*> Triggers;
-
-	TArray<FTransform> RandTransform;
 
 protected:
 
@@ -109,6 +125,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Game Instance")
 	UTPSGameInstance* TPSGameInstance;
 
+	UPROPERTY(VisibleAnywhere, Category = "Trigger")
+	UClass* TriggerClass;
+
 private:
 
 	FWeaponPreset WeaponPreset;
@@ -121,7 +140,11 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*> EnemySpawnPoints;
 
+	UPROPERTY(VisibleAnywhere, BlueprintGetter = GetCurrentSpawnedIndex)
+	int32 CurrentSpawnedIndex = 0;
+
 	// Spawn에 필요한 모든 배열들의 동적인 길이를 Setting하는 함수
 	UFUNCTION(BlueprintCallable)
 	void SetArrRelatedToWeaponSpawn(int32 ArrLength);
+
 };

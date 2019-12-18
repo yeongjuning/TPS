@@ -78,6 +78,17 @@ protected:
 	//UFUNCTION()
 	//void StopAttack();
 
+protected:
+
+	UFUNCTION()
+	void PullOutRifle();
+
+	UFUNCTION()
+	void PullOutKnife();
+
+	UFUNCTION()
+	void PullOutGrenade();
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 

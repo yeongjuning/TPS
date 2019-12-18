@@ -2,6 +2,7 @@
 
 
 #include "PlayerCharacter.h"
+#include "TPSGameModeBase.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -23,6 +24,83 @@ APlayerCharacter::APlayerCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(FName(TEXT("Main Camera")));
 	CameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+}
+
+void ATPSCharacter::EquipWeapon(int32 SlotIdx, AWeaponBase* WeaponActor)
+{
+	if (EquipedWeapons.IsValidIndex(SlotIdx) == false)
+		return;
+
+	if (IsValid(WeaponActor) == false)
+		return;
+
+	FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget,
+		EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+
+	switch (SlotIdx)
+	{
+	case 0:
+		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Rifle_Socket"));
+		break;
+	case 1:
+		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Knife_Socket"));
+		break;
+	case 2:
+		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Grenade_Socket"));
+		break;
+	default:
+		break;
+	}
+
+	// todo :: 이부근은 손목에 들어왔을 경우에 해당하는 함수로 옮겨줌
+	EquipedWeapons[SlotIdx] = WeaponActor;
+}
+
+void ATPSCharacter::PullOutWeapon(int32 SlotIdx, AWeaponBase* WeaponActor)
+{
+	if (EquipedWeapons.IsValidIndex(SlotIdx) == false)
+		return;
+
+	if (IsValid(WeaponActor) == false)
+		return;
+	
+	FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget,
+		EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+
+	WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Socket_Hand_R"));
+	SetCurrentWeaponSlot(SlotIdx);
+
+	EquipedWeapons[SlotIdx]->Instigator = this;
+	OnChangeCurrentWeapon.Broadcast(WeaponActor, SlotIdx);
+}
+
+void ATPSCharacter::DropWeapon(int32 SlotIdx)
+{
+	if (EquipedWeapons.IsValidIndex(SlotIdx) == false)
+		return;
+
+	Weapon = EquipedWeapons[SlotIdx];
+
+	if (IsValid(Weapon))
+		return;
+
+	Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+	UE_LOG(LogTemp, Log, TEXT("Slot Index : %d"), SlotIdx);
+
+	EquipedWeapons[SlotIdx] = nullptr;
+
+	CurrentWeaponSlot = -1;
+
+	for (int32 i = 0; i < EquipedWeapons.Num(); i++)
+	{
+		if (IsValid(EquipedWeapons[i]))
+		{
+			CurrentWeaponSlot = i;
+			UE_LOG(LogTemp, Log, TEXT("Drop Weapon : %d"), CurrentWeaponSlot);
+			return;
+		}
+	}
 }
 
 void APlayerCharacter::Attack_Implementation()
@@ -63,6 +141,7 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	CurStamina = GetStatus()->GetCurrentStamina();
+
 }
 
 void APlayerCharacter::Tick(float DeltaSeconds)

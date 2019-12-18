@@ -7,6 +7,7 @@
 #include "WeaponBase.h"
 #include "PlayerCharacter.generated.h"
 
+class ATPSGameModeBase;
 /**
  * 
  */

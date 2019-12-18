@@ -4,7 +4,6 @@
 #include "TPSGameInstance.h"
 #include "WeaponBase.h"
 
-
 UTPSGameInstance::UTPSGameInstance()
 {
 	ConstructorHelpers::FObjectFinder<UDataTable> WeaponTableFinder(
@@ -64,6 +63,20 @@ bool UTPSGameInstance::FindWeaponPreset(const FName& InWeaponId, FWeaponPreset& 
 FName UTPSGameInstance::GetRandomWeaponId() const
 {
 	return WeaponIdContainer[FMath::RandRange(0, WeaponIdContainer.Num() - 1)];
+}
+
+FName UTPSGameInstance::GetWeaponId(int32 WeaponIdIndex) const
+{
+	FDataTableRowHandle WeaponRowHandle;
+	WeaponRowHandle.DataTable = DT_Weapon;
+	WeaponRowHandle.RowName = FName(*FString::Printf(TEXT("Weapon%d"), WeaponIdIndex));
+
+	FWeaponPreset* Row = WeaponRowHandle.GetRow<FWeaponPreset>(FString());
+	
+	if (Row != nullptr)
+		return WeaponRowHandle.RowName;
+
+	return FName();
 }
 
 // RandomKey 생성

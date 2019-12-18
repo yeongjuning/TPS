@@ -9,6 +9,8 @@
 
 #include "TPSCharacter.generated.h"
 
+class ATPSGameModeBase;
+class UTPSGameInstance;
 class AWeaponBase;
 class UAttackComponent;
 
@@ -38,6 +40,9 @@ public:
 	void EquipWeapon(int32 SlotIdx, AWeaponBase* WeaponActor);
 
 	UFUNCTION(BlueprintCallable)
+	void PullOutWeapon(int32 SlotIdx, AWeaponBase* WeaponActor);
+
+	UFUNCTION(BlueprintCallable)
 	void DropWeapon(int32 SlotIdx);
 
 public:	// Weapon의 Slot과 관련된 함수 
@@ -60,6 +65,13 @@ public:	// Weapon의 Slot과 관련된 함수
 	// 현재 장착된 무기의 공격속도를 반환
 	UFUNCTION(BlueprintCallable)
 	float GetAttackSpeed() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetEquipedWeaponId(int32 WeaponIdsIndex, int32 SlotIdx);
+
+	// 현재 장착된 무기들의 ID들를 반환
+	UFUNCTION(BlueprintCallable)
+	FName GetEquipedWeaponIds(int32 WeaponIdsIndex, int32 SlotIdx) const;
 
 public:
 
@@ -92,11 +104,14 @@ public:
 public:
 
 	UFUNCTION(BlueprintCallable)
+	TArray<AWeaponBase*> GetEquipedWeapons() const { return EquipedWeapons; }
+
+	UFUNCTION(BlueprintCallable)
 	UAttackComponent* GetAttackComponent() const { return AttackComponent; }
 
 	UFUNCTION(BlueprintCallable)
 	UCharacterStatus* GetStatus() const { return CharStatus; }
-
+	
 public:
 
 	UFUNCTION(BlueprintCallable)
@@ -104,11 +119,6 @@ public:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-protected:
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, BlueprintGetter = IsDead, Category = "Possible Behavior")
-	bool bIsDead = false;
 
 public:	
 	// Called every frame
@@ -132,6 +142,19 @@ public:
 	UFUNCTION()
 	void OnDeathTimerComplete();
 
+protected:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, BlueprintGetter = IsDead, Category = "Possible Behavior")
+	bool bIsDead = false;
+
+protected:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UTPSGameInstance* TPSGameInstance;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	ATPSGameModeBase* TPSGameMode;
+
 private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), BlueprintGetter = GetStatus)
@@ -142,8 +165,11 @@ private:
 
 private:
 
-	UPROPERTY(VisibleAnywhere, SaveGame)
+	UPROPERTY(VisibleAnywhere, SaveGame, meta = (AllowPrivateAccess = "true"), BlueprintGetter = GetEquipedWeapons)
 	TArray<AWeaponBase*> EquipedWeapons;
+
+	UPROPERTY(VisibleAnywhere, SaveGame, meta = (AllowPrivateAccess = "true"))
+	TArray<FName> WeaponIds;
 
 	UPROPERTY(VisibleAnywhere, SaveGame, BlueprintGetter = GetCurrentWeaponSlot)
 	int32 CurrentWeaponSlot = 0;

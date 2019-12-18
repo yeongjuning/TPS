@@ -50,7 +50,6 @@ void ATPSPlayerController::Run()
 	IsPlaying();
 	DoesPlayerExist();
 
-	UE_LOG(LogTemp, Log, TEXT("Run"));
 	GetCharStatus()->bCanThePlayerRun = true;
 	GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 }
@@ -60,7 +59,6 @@ void ATPSPlayerController::StopRun()
 	IsPlaying();
 	DoesPlayerExist();
 
-	UE_LOG(LogTemp, Log, TEXT("StopRun"));
 	GetCharStatus()->bCanThePlayerRun = false;
 	GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 }
@@ -99,18 +97,59 @@ void ATPSPlayerController::Attack()
 //	GetAttackComponent()->bAttack = false;
 //}
 
+void ATPSPlayerController::PullOutRifle()
+{
+	IsPlaying();
+	DoesPlayerExist();
+
+	AWeaponBase* Rilfe = GetTPSPlayer()->GetWeapon(0);
+
+	if (IsValid(Rilfe) == false)
+		return;
+
+	UE_LOG(LogTemp, Log, TEXT("Pull Out Rifle"));
+	GetTPSPlayer()->SetCurrentWeaponSlot(0);
+	GetTPSPlayer()->PullOutWeapon(0, Rilfe);
+}
+
+void ATPSPlayerController::PullOutKnife()
+{
+	IsPlaying();
+	DoesPlayerExist();
+
+	AWeaponBase* Knife = GetTPSPlayer()->GetWeapon(1);
+
+	if (IsValid(Knife) == false)
+		return;
+
+	UE_LOG(LogTemp, Log, TEXT("Pull Out Knife"));
+	GetTPSPlayer()->SetCurrentWeaponSlot(1);
+	GetTPSPlayer()->PullOutWeapon(0, Knife);
+}
+
+void ATPSPlayerController::PullOutGrenade()
+{
+	IsPlaying();
+	DoesPlayerExist();
+
+	AWeaponBase* Grenade = GetTPSPlayer()->GetWeapon(2);
+
+	if (IsValid(Grenade) == false)
+		return;
+	
+	UE_LOG(LogTemp, Log, TEXT("Pull Out Grenade"));
+	GetTPSPlayer()->SetCurrentWeaponSlot(2);
+	GetTPSPlayer()->PullOutWeapon(0, Grenade);
+}
+
 void ATPSPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
 	if (GetCharStatus()->bCanThePlayerRun)
-	{
 		GetCharStatus()->StaminaManager(GetTPSPlayer()->CurStamina);
-	}
 	else
-	{
 		GetCharStatus()->StaminaManager(GetTPSPlayer()->CurStamina);
-	}
 
 	RotValByMouseRot();
 }
@@ -148,6 +187,15 @@ void ATPSPlayerController::BeginPlay()
 		EInputEvent::IE_Pressed, this, &ATPSPlayerController::Attack);
 	//InputComponent->BindAction(TEXT("StopAttack"),
 	//	EInputEvent::IE_Released, this, &ATPSPlayerController::StopAttack);
+
+	InputComponent->BindAction(TEXT("PullOutRifle"),
+		EInputEvent::IE_Pressed, this, &ATPSPlayerController::PullOutRifle);
+
+	InputComponent->BindAction(TEXT("PullOutKnife"),
+		EInputEvent::IE_Pressed, this, &ATPSPlayerController::PullOutKnife);
+
+	InputComponent->BindAction(TEXT("PullOutGreande"),
+		EInputEvent::IE_Pressed, this, &ATPSPlayerController::PullOutGrenade);
 
 	InputComponent->BindAxis(TEXT("Move Forward"), this, &ATPSPlayerController::MoveForward);
 	InputComponent->BindAxis(TEXT("Move Right"), this, &ATPSPlayerController::MoveRight);
