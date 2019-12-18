@@ -31,6 +31,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	AWeaponBase* Weapon;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, BlueprintGetter = GetEquipedWeapons)
+	TArray<AWeaponBase*> EquipedWeapons;
 
 public:
 	// Sets default values for this character's properties
@@ -41,6 +44,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PullOutWeapon(int32 SlotIdx, AWeaponBase* WeaponActor);
+
+	UFUNCTION(BlueprintCallable)
+	void AttachWeaponActor(int32 SlotIdx, AWeaponBase* WeaponActor);
 
 	UFUNCTION(BlueprintCallable)
 	void DropWeapon(int32 SlotIdx);
@@ -151,7 +157,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UTPSGameInstance* TPSGameInstance;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ATPSGameModeBase* TPSGameMode;
 
@@ -164,9 +170,6 @@ private:
 	UAttackComponent* AttackComponent;
 
 private:
-
-	UPROPERTY(VisibleAnywhere, SaveGame, meta = (AllowPrivateAccess = "true"), BlueprintGetter = GetEquipedWeapons)
-	TArray<AWeaponBase*> EquipedWeapons;
 
 	UPROPERTY(VisibleAnywhere, SaveGame, meta = (AllowPrivateAccess = "true"))
 	TArray<FName> WeaponIds;

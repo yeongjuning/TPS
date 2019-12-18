@@ -80,6 +80,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetCurrentSpawnedIndex() const { return CurrentSpawnedIndex; }
 
+	UFUNCTION(BlueprintCallable)
+	void IndexReduction(int32 OverlapIndex);
+	
 public:	// Enemy
 
 	UFUNCTION(BlueprintCallable)
@@ -143,8 +146,13 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintGetter = GetCurrentSpawnedIndex)
 	int32 CurrentSpawnedIndex = 0;
 
+	UPROPERTY(VisibleAnywhere)
+	int32 SpawnArrLength = 0;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bRespawn = false;
+
 	// Spawn에 필요한 모든 배열들의 동적인 길이를 Setting하는 함수
 	UFUNCTION(BlueprintCallable)
 	void SetArrRelatedToWeaponSpawn(int32 ArrLength);
-
 };

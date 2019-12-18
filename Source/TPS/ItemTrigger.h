@@ -41,7 +41,7 @@ public:
 
 protected:
 	UFUNCTION(BlueprintCallable)
-	bool bIsTheSameWeapon(int32 Current, uint8 Slot) const;
+	bool bIsSameWeaponEquipped(uint8 Slot) const;
 
 protected:
 	// Called when the game starts or when spawned

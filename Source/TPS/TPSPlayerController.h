@@ -80,14 +80,17 @@ protected:
 
 protected:
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void PullOutRifle();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void PullOutKnife();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void PullOutGrenade();
+
+	UFUNCTION(BlueprintCallable)
+	void ReapWeapon();
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;

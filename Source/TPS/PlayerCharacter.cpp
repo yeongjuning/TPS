@@ -11,7 +11,7 @@ APlayerCharacter::APlayerCharacter()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(FName(TEXT("Camera Boom")));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->RelativeRotation = FRotator(-45.0f, 0.0f, 0.0f);
-	CameraBoom->TargetArmLength = 600.0f;
+	CameraBoom->TargetArmLength = 300.0f;
 	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->CameraLagSpeed = 2.5f;
 	CameraBoom->SetAbsolute(false, true, false);
@@ -34,25 +34,7 @@ void ATPSCharacter::EquipWeapon(int32 SlotIdx, AWeaponBase* WeaponActor)
 	if (IsValid(WeaponActor) == false)
 		return;
 
-	FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget,
-		EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
-
-	switch (SlotIdx)
-	{
-	case 0:
-		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Rifle_Socket"));
-		break;
-	case 1:
-		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Knife_Socket"));
-		break;
-	case 2:
-		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Grenade_Socket"));
-		break;
-	default:
-		break;
-	}
-
-	// todo :: 이부근은 손목에 들어왔을 경우에 해당하는 함수로 옮겨줌
+	AttachWeaponActor(SlotIdx, WeaponActor);
 	EquipedWeapons[SlotIdx] = WeaponActor;
 }
 
@@ -100,6 +82,27 @@ void ATPSCharacter::DropWeapon(int32 SlotIdx)
 			UE_LOG(LogTemp, Log, TEXT("Drop Weapon : %d"), CurrentWeaponSlot);
 			return;
 		}
+	}
+}
+
+void ATPSCharacter::AttachWeaponActor(int32 SlotIdx, AWeaponBase* WeaponActor)
+{
+	FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget,
+		EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
+
+	switch (SlotIdx)
+	{
+	case 0:
+		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Rifle_Socket"));
+		break;
+	case 1:
+		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Knife_Socket"));
+		break;
+	case 2:
+		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Grenade_Socket"));
+		break;
+	default:
+		break;
 	}
 }
 

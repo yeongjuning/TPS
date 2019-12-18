@@ -34,52 +34,31 @@ void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 
 			uint8 SlotIdx = uint8(TPSGameMode->Weapons[CurrentOverlapIndex]->WeaponKind);
 
-			if (bIsTheSameWeapon(CurrentOverlapIndex, SlotIdx) == false)
+			if (bIsSameWeaponEquipped(SlotIdx) == false)
 			{
 				PlayerCharacter->EquipWeapon(SlotIdx, TPSGameMode->Weapons[CurrentOverlapIndex]);
 				PlayerCharacter->SetEquipedWeaponId(CurrentOverlapIndex, SlotIdx);
 				SetSpawnedActorHidden();
 				
-				TPSGameMode->Weapons[CurrentOverlapIndex] = nullptr;
-				TPSGameMode->Triggers[CurrentOverlapIndex] = nullptr;
-
-				CurrentOverlapIndex = -1;
-				
-				for (int32 i = 0; i < TPSGameMode->Weapons.Num(); i++)
-				{
-					if (IsValid(TPSGameMode->Weapons[i]))
-					{
-						CurrentOverlapIndex = i;
-						UE_LOG(LogTemp, Log, TEXT("남은 스폰 인덱스 : %d"), CurrentOverlapIndex);
-
-						return;
-					}
-				}
+				TPSGameMode->IndexReduction(CurrentOverlapIndex);
 
 				// For문을 돌려서 VisibleTimer를 호출시킨다?
 				GetWorld()->GetTimerManager().SetTimer(TPSGameMode->WeaponSpawnTimeHandle, TPSGameMode, &ATPSGameModeBase::VisibleTimer, 5.f, false);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Log, TEXT("동일한 무기가 존재합니다."));
 			}
 		}
 	}	
 }
 
-bool AItemTrigger::bIsTheSameWeapon(int32 Current, uint8 Slot) const
+bool AItemTrigger::bIsSameWeaponEquipped(uint8 Slot) const
 {
-	AWeaponBase* Spawned = TPSGameMode->Weapons[Current];
-
 	if (IsValid(PlayerCharacter->GetWeapon(Slot)) == false)
-	{
-		UE_LOG(LogTemp, Log, TEXT("현재 장착된 무기가 존재하지 않아 그대로 장착가능합니다."));
 		return false;
-	}
-
-	if (Spawned == PlayerCharacter->GetEquipedWeapons()[Slot])
-	{
-		UE_LOG(LogTemp, Log, TEXT("스폰된 무기 ID와 현재 장착된 무기 ID가 같습니다."));
+	else
 		return true;
-	}
-
-	return false;
 }
 
 void AItemTrigger::SetSpawnedActorHidden()

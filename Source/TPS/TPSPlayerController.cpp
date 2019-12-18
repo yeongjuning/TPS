@@ -142,6 +142,21 @@ void ATPSPlayerController::PullOutGrenade()
 	GetTPSPlayer()->PullOutWeapon(0, Grenade);
 }
 
+void ATPSPlayerController::ReapWeapon()
+{
+	IsPlaying();
+	DoesPlayerExist();
+
+	AWeaponBase* CurrentWeapon = GetTPSPlayer()->GetCurrentWeapon();
+
+	if (IsValid(CurrentWeapon) == false)
+		return;
+
+	GetTPSPlayer()->AttachWeaponActor(GetTPSPlayer()->GetCurrentWeaponSlot(), CurrentWeapon);
+
+	UE_LOG(LogTemp, Log, TEXT("Readp Weapon"));
+}
+
 void ATPSPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -196,6 +211,9 @@ void ATPSPlayerController::BeginPlay()
 
 	InputComponent->BindAction(TEXT("PullOutGreande"),
 		EInputEvent::IE_Pressed, this, &ATPSPlayerController::PullOutGrenade);
+
+	InputComponent->BindAction(TEXT("ReapWeapon"),
+		EInputEvent::IE_Pressed, this, &ATPSPlayerController::ReapWeapon);
 
 	InputComponent->BindAxis(TEXT("Move Forward"), this, &ATPSPlayerController::MoveForward);
 	InputComponent->BindAxis(TEXT("Move Right"), this, &ATPSPlayerController::MoveRight);

@@ -62,6 +62,7 @@ bool ATPSGameModeBase::CheckEqulRandomTransform(int32 TransIdx, int32 Count) con
 		}
 	}
 
+	
 	return false;
 }
 
@@ -79,10 +80,12 @@ void ATPSGameModeBase::WeaponsSpawn(int32 TriggerIdx, FName SpawnId, FWeaponPres
 
 void ATPSGameModeBase::SetArrRelatedToWeaponSpawn(int32 ArrLength)
 {
-	RandTransform.SetNum(ArrLength);
-	CurSpawnedWeaponIds.SetNum(ArrLength);
-	Weapons.SetNum(ArrLength);
-	Triggers.SetNum(ArrLength);
+	SpawnArrLength += ArrLength;
+	
+	RandTransform.SetNum(SpawnArrLength);
+	CurSpawnedWeaponIds.SetNum(SpawnArrLength);
+	Weapons.SetNum(SpawnArrLength);
+	Triggers.SetNum(SpawnArrLength);
 }
 
 //======================================================================//
@@ -92,7 +95,6 @@ void ATPSGameModeBase::SetCurrentSpawnedIdIndex(int32 WeaponIdIndex)
 		return;
 
 	CurrentSpawnedIndex = WeaponIdIndex;
-	UE_LOG(LogTemp, Log, TEXT("Set Current Spawned Index : %d"), CurrentSpawnedIndex);
 }
 
 FName ATPSGameModeBase::GetSpawnedId(int32 WeaponIdIndex) const
@@ -110,9 +112,28 @@ FName ATPSGameModeBase::GetCurrentSpawnedId() const
 	return GetSpawnedId(Spawned);
 }
 
+void ATPSGameModeBase::IndexReduction(int32 OverlapIndex)
+{
+	Weapons[OverlapIndex] = nullptr;
+	Triggers[OverlapIndex] = nullptr;
+
+	OverlapIndex = -1;
+
+	for (int32 i = 0; i < Weapons.Num(); i++)
+	{
+		if (IsValid(Weapons[i]))
+		{
+			OverlapIndex = i;
+			UE_LOG(LogTemp, Log, TEXT("IndexReduction() : %d"), OverlapIndex);
+			return;
+		}
+	}
+}
+
 void ATPSGameModeBase::VisibleTimer()
 {
-	UE_LOG(LogTemp, Log, TEXT("!!!!!!!!!!VisibleTimer 호출!!!!!!!!!!!!!!"));
+	UE_LOG(LogTemp, Log, TEXT("=====================Respawn====================="));
+	bRespawn = true;
 	RandomWeaponSpawn();
 }
 
@@ -152,5 +173,7 @@ void ATPSGameModeBase::BeginPlay()
 	
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
 	
+	UE_LOG(LogTemp, Log ,TEXT("TPS Game Mode Base 시작!!"));
+
 	RandomWeaponSpawn();
 }
