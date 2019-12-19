@@ -62,7 +62,6 @@ bool ATPSGameModeBase::CheckEqulRandomTransform(int32 TransIdx, int32 Count) con
 		}
 	}
 
-	
 	return false;
 }
 
@@ -133,7 +132,6 @@ void ATPSGameModeBase::IndexReduction(int32 OverlapIndex)
 void ATPSGameModeBase::VisibleTimer()
 {
 	UE_LOG(LogTemp, Log, TEXT("=====================Respawn====================="));
-	bRespawn = true;
 	RandomWeaponSpawn();
 }
 

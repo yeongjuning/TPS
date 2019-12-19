@@ -9,11 +9,22 @@ AAmmoInventory::AAmmoInventory()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-int32 AAmmoInventory::GetMaxAmmo()
+int32 AAmmoInventory::GetMaxAmmo(int32 Slot)
 {
-	MaxAmmo.Add(EWeaponKind::Rifle, 30);
-	MaxAmmo.Add(EWeaponKind::Knife, 1);
-	MaxAmmo.Add(EWeaponKind::Grenade, 3);
+	switch (Slot)
+	{
+	case 0:
+		MaxAmmo.Add(EWeaponKind::Rifle, 30);
+		break;
+	case 1:
+		MaxAmmo.Add(EWeaponKind::Knife, 1);
+		break;
+	case 2:
+		MaxAmmo.Add(EWeaponKind::Grenade, 3);
+		break;
+	default:
+		break;
+	}
 
 	for (TMap<EWeaponKind, int32>::TIterator it = MaxAmmo.CreateIterator(); it; ++it)
 	{
@@ -24,12 +35,23 @@ int32 AAmmoInventory::GetMaxAmmo()
 	return MaxAmmoVal;
 }
 
-int32 AAmmoInventory::GetTotalAmmoAmount()
+int32 AAmmoInventory::GetTotalAmmoAmount(int32 Slot)
 {
-	TotalAmmoAmount.Add(EWeaponKind::Rifle, 150);
-	TotalAmmoAmount.Add(EWeaponKind::Knife, 1);
-	TotalAmmoAmount.Add(EWeaponKind::Grenade, 3);
-
+	switch (Slot)
+	{
+	case 0:
+		TotalAmmoAmount.Add(EWeaponKind::Rifle, 150);
+		break;
+	case 1:
+		TotalAmmoAmount.Add(EWeaponKind::Knife, 1);
+		break;
+	case 2:
+		TotalAmmoAmount.Add(EWeaponKind::Grenade, 3);
+		break;
+	default:
+		break;
+	}
+	
 	for (TMap<EWeaponKind, int32>::TIterator it = TotalAmmoAmount.CreateIterator(); it; ++it)
 	{
 		ToTalAmmoKey = it->Key;
@@ -58,9 +80,7 @@ void AAmmoInventory::AddAmmo(EWeaponKind WeaponKind, int32 AddAmmo)
 int32 AAmmoInventory::ConsumeAmmo(EWeaponKind WeaponKind, int32 MagazineCount)
 {
 	if (AmmoInventory.Contains(WeaponKind) == false)
-	{
 		return 0;
-	}
 	else
 	{
 		int Ammo = FMath::Min(AmmoInventory[WeaponKind], MagazineCount);

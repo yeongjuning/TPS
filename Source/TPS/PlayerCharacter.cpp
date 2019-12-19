@@ -144,7 +144,6 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	CurStamina = GetStatus()->GetCurrentStamina();
-
 }
 
 void APlayerCharacter::Tick(float DeltaSeconds)

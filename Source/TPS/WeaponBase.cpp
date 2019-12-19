@@ -11,16 +11,19 @@ AWeaponBase::AWeaponBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	//BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-	//RootComponent = BoxComponent;
-	//BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	//BoxComponent->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 }
 
 void AWeaponBase::FireAndAttack_Implementation()
 {
 	UE_LOG(LogTemp, Log, TEXT("Fire And Attack"));
+}
+
+bool AWeaponBase::IsEquippedWeapon(int32 Slot)
+{
+	if (IsValid(TPSPlayerCharacter->EquipedWeapons[Slot]))
+		return true;
+	else
+		return false;
 }
 
 // Called when the game starts or when spawned
@@ -30,10 +33,12 @@ void AWeaponBase::BeginPlay()
 
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
 	TPSPlayerCharacter = Cast<ATPSCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	AmmoInven = TPSGameInstance->GetAmmoInventory();
 }
 
 // Called every frame
 void AWeaponBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	
 }

@@ -31,10 +31,10 @@ public:
 	AWeaponBase* Weapon;	
 
 	UFUNCTION(BlueprintCallable)
-	int32 GetMaxAmmo();
+	int32 GetMaxAmmo(int32 Slot);
 
 	UFUNCTION(BlueprintCallable)
-	int32 GetTotalAmmoAmount();
+	int32 GetTotalAmmoAmount(int32 Slot);
 
 	// 무기 타입에 따른 남은 탄환 갯수 반환
 	UFUNCTION(BlueprintCallable)

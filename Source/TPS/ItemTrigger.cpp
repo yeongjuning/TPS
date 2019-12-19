@@ -32,22 +32,21 @@ void AItemTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 		{
 			UE_LOG(LogTemp, Log, TEXT("Overlaped Weapon Index : %d"), CurrentOverlapIndex);
 
-			uint8 SlotIdx = uint8(TPSGameMode->Weapons[CurrentOverlapIndex]->WeaponKind);
+			AWeaponBase* Weapon = TPSGameMode->Weapons[CurrentOverlapIndex];
+			uint8 SlotIdx = uint8(Weapon->WeaponKind);
 
 			if (bIsSameWeaponEquipped(SlotIdx) == false)
 			{
-				PlayerCharacter->EquipWeapon(SlotIdx, TPSGameMode->Weapons[CurrentOverlapIndex]);
+				PlayerCharacter->EquipWeapon(SlotIdx, Weapon);
 				PlayerCharacter->SetEquipedWeaponId(CurrentOverlapIndex, SlotIdx);
 				SetSpawnedActorHidden();
 				
 				TPSGameMode->IndexReduction(CurrentOverlapIndex);
-
-				// For문을 돌려서 VisibleTimer를 호출시킨다?
 				GetWorld()->GetTimerManager().SetTimer(TPSGameMode->WeaponSpawnTimeHandle, TPSGameMode, &ATPSGameModeBase::VisibleTimer, 5.f, false);
 			}
 			else
 			{
-				UE_LOG(LogTemp, Log, TEXT("동일한 무기가 존재합니다."));
+				AmmoInventory->AddAmmo(Weapon->WeaponKind, AmmoInventory->GetMaxAmmo(SlotIdx));
 			}
 		}
 	}	
@@ -78,6 +77,8 @@ void AItemTrigger::BeginPlay()
 	PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());	// 일단 냅두기
 	
+	AmmoInventory = TPSGameInstance->GetAmmoInventory();
+
 	CurrentOverlapIndex = TPSGameMode->SpawnIndex;
 }
 

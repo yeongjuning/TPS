@@ -105,6 +105,11 @@ public:
 
 protected:
 
+	UFUNCTION(BlueprintCallable)
+	bool IsEquippedWeapon(int32 Slot);
+
+protected:
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintGetter = GetAmmo, Category = "Ammo Info")
 	float Ammo = 0.0f;
 

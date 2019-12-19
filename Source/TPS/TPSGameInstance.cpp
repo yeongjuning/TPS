@@ -79,6 +79,17 @@ FName UTPSGameInstance::GetWeaponId(int32 WeaponIdIndex) const
 	return FName();
 }
 
+AAmmoInventory* UTPSGameInstance::GetAmmoInventory()
+{
+	UClass* AmmoInven = AAmmoInventory::StaticClass();
+	AmmoInventory = GetWorld()->SpawnActor<AAmmoInventory>(AmmoInven);
+	
+	if (IsValid(AmmoInventory))
+		return AmmoInventory;
+	else
+		return nullptr;
+}
+
 // RandomKey 생성
 EWeaponKind UTPSGameInstance::GetRandomWeaponKind()
 {

@@ -16,8 +16,9 @@ void AGrenade::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Ammo = AmmoInven->GetMaxAmmo();
-	UE_LOG(LogTemp, Log, TEXT("%d"), Ammo);
+	AmmoInven->GetMaxAmmo(2);
+
+	UE_LOG(LogTemp, Log, TEXT("Grenade Begin"));
 }
 
 void AGrenade::FireAndAttack_Implementation()

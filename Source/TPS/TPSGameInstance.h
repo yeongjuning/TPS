@@ -37,6 +37,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FName GetWeaponId(int32 WeaponIdIndex) const;
 
+	UFUNCTION(BlueprintCallable)
+	AAmmoInventory* GetAmmoInventory();
+
 public:
 	
 	UFUNCTION(BlueprintCallable)
@@ -59,6 +62,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Status")
 	UCharacterStatus* CharacterStatus;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo Inventory")
+	AAmmoInventory* AmmoInventory;
+
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Table")

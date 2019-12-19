@@ -124,7 +124,7 @@ void ATPSPlayerController::PullOutKnife()
 
 	UE_LOG(LogTemp, Log, TEXT("Pull Out Knife"));
 	GetTPSPlayer()->SetCurrentWeaponSlot(1);
-	GetTPSPlayer()->PullOutWeapon(0, Knife);
+	GetTPSPlayer()->PullOutWeapon(1, Knife);
 }
 
 void ATPSPlayerController::PullOutGrenade()
@@ -139,7 +139,7 @@ void ATPSPlayerController::PullOutGrenade()
 	
 	UE_LOG(LogTemp, Log, TEXT("Pull Out Grenade"));
 	GetTPSPlayer()->SetCurrentWeaponSlot(2);
-	GetTPSPlayer()->PullOutWeapon(0, Grenade);
+	GetTPSPlayer()->PullOutWeapon(2, Grenade);
 }
 
 void ATPSPlayerController::ReapWeapon()

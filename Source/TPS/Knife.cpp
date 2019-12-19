@@ -15,8 +15,8 @@ void AKnife::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Ammo = AmmoInven->GetMaxAmmo();
-	UE_LOG(LogTemp, Log, TEXT("%d"), Ammo);
+	AmmoInven->GetMaxAmmo(1);
+	UE_LOG(LogTemp, Log, TEXT("Knife Begin"));
 }
 
 void AKnife::FireAndAttack_Implementation()

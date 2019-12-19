@@ -15,9 +15,9 @@ void ARifle::BeginPlay()
 { 
 	Super::BeginPlay();
 
-	// TODO Rifle에서 TEST 이후 knife나 Grenade 넣어주기
-	Ammo = AmmoInven->GetMaxAmmo();
-	UE_LOG(LogTemp, Log, TEXT("%d"), Ammo);
+	AmmoInven->GetMaxAmmo(0);
+
+	UE_LOG(LogTemp, Log, TEXT("Rifle Begin"));
 }
 
 void ARifle::FireAndAttack_Implementation()

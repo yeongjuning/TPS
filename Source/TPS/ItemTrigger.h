@@ -9,6 +9,7 @@
 #include "TPSGameInstance.h"
 #include "WeaponBase.h"
 #include "AttackComponent.h"
+#include "AmmoInventory.h"
 
 #include "ItemTrigger.generated.h"
 
@@ -58,6 +59,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	APlayerCharacter* PlayerCharacter;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	AAmmoInventory* AmmoInventory;
 
 private:
 
