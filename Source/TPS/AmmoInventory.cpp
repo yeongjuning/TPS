@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AmmoInventory.h"
@@ -81,12 +81,14 @@ int32 AAmmoInventory::ConsumeAmmo(EWeaponKind WeaponKind, int32 MagazineCount)
 {
 	if (AmmoInventory.Contains(WeaponKind) == false)
 		return 0;
-	else
-	{
-		int Ammo = FMath::Min(AmmoInventory[WeaponKind], MagazineCount);
-		AmmoInventory[WeaponKind] -= Ammo;
-		return Ammo;
-	}
+	
+	if (WeaponKind == EWeaponKind::Knife)
+		return 0;
+	
+	int Ammo = FMath::Min(AmmoInventory[WeaponKind], MagazineCount);
+	AmmoInventory[WeaponKind] -= Ammo;
+
+	return Ammo;
 }
 
 

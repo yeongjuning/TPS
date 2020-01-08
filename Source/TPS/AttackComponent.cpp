@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AttackComponent.h"
@@ -51,27 +51,25 @@ void UAttackComponent::CompleteReload()
 	UE_LOG(LogTemp, Log, TEXT("Completed Reload"));
 }
 
-void UAttackComponent::Attacking()
-{
-	if (bCanAttack)
-	{
-		AWeaponBase* Weapon = PlayerCharacter->GetCurrentWeapon();
-		if (IsValid(Weapon))
-		{
-			GetWorld()->GetTimerManager().SetTimer(WaitAttackTimer
-				, this, &UAttackComponent::OnWaitAttackTimerEnd
-				, 1.0f / PlayerCharacter->GetAttackSpeed(), false);
-
-			StopAttack();
-			Weapon->FireAndAttack();
-		}
-	}
-}
-
 void UAttackComponent::Attack()
 {
-	bCanAttack = true;
-	UE_LOG(LogTemp, Log, TEXT("Attack"));
+	AWeaponBase* Weapon = PlayerCharacter->GetCurrentWeapon();
+	
+	if (IsValid(Weapon))
+	{	
+		int32 CurrentAmmo = Weapon->AmmoInven->GetAmmo(Weapon->WeaponKind);
+		Weapon->AmmoInven->ConsumeAmmo(Weapon->WeaponKind, 1);		// Ammo 소비
+
+		if (CurrentAmmo <= 0)
+		{
+			Weapon->IsAmmoEmpty();
+			UE_LOG(LogTemp, Log, TEXT("현재 남은 Ammo가 존재하지 않습니다."));
+			StopAttack();
+		}
+
+		bCanAttack = true;
+		Weapon->FireAndAttack();
+	}
 }
 
 void UAttackComponent::StopAttack()
@@ -82,7 +80,7 @@ void UAttackComponent::StopAttack()
 
 void UAttackComponent::OnWaitAttackTimerEnd()
 {
-	Attack();
+	StopAttack();
 }
 
 // Called when the game starts
@@ -91,6 +89,7 @@ void UAttackComponent::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerCharacter = Cast<ATPSCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	TPSGameMode = GetWorld()->GetAuthGameMode<ATPSGameModeBase>();
 }
 
 // Called every frame

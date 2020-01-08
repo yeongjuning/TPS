@@ -86,6 +86,10 @@ public:
 	void FireAndAttack();
 	virtual void FireAndAttack_Implementation();
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void StopFireAndAttack();
+	virtual void StopFireAndAttack_Implementation();
+
 public:
 
 	UFUNCTION(BlueprintCallable)

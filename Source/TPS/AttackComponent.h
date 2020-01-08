@@ -4,7 +4,7 @@
 
 #include "EngineMinimal.h"
 #include "Components/SceneComponent.h"
-
+#include "TPSGameModeBase.h"
 #include "WeaponBase.h"
 #include "AmmoInventory.h"
 
@@ -43,14 +43,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CompleteReload();
 
-	// 무기가 있는지 판단한 후 Attack
 	UFUNCTION(BlueprintCallable)
-	void Attacking();
-
-public:
-
-	UFUNCTION(BlueprintCallable)
-	void Attack();	
+	void Attack();
 
 	UFUNCTION(BlueprintCallable)
 	void StopAttack();
@@ -71,9 +65,6 @@ public:
 
 protected:
 
-	//UPROPERTY(Transient, VisibleAnywhere, BlueprintReadOnly)
-	//bool bCanAttack = false;
-
 	FTimerHandle WaitAttackTimer;
 
 	void OnWaitAttackTimerEnd();
@@ -86,11 +77,10 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	ATPSCharacter* PlayerCharacter;
 
-	//UPROPERTY(VisibleAnywhere, SaveGame)
-	//TArray<AWeaponBase*> EquipedWeapons;
+	UPROPERTY(VisibleAnywhere)
+	ATPSGameModeBase* TPSGameMode;
 
-	//UPROPERTY(VisibleAnywhere, SaveGame, BlueprintGetter = GetCurrentWeaponSlot)
-	//int32 CurrentWeaponSlot = 0;
+private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintGetter = IsAttacking)
 	bool bCanAttack = false;

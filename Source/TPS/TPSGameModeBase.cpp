@@ -73,6 +73,11 @@ void ATPSGameModeBase::WeaponsSpawn(int32 TriggerIdx, FName SpawnId, FWeaponPres
 		{
 			Weapons[TriggerIdx] = GetWorld()->SpawnActor<AWeaponBase>
 				(Preset.WeaponActor, RandTransform[TriggerIdx], Parameters);
+
+			int32 WeaponMaxAmmo = Weapons[TriggerIdx]->AmmoInven->GetMaxAmmo(int32(Preset.WeaponKind));
+
+			Weapons[TriggerIdx]->AmmoInven->AddAmmo(Preset.WeaponKind, WeaponMaxAmmo);
+			WeaponAmmo = Weapons[TriggerIdx]->AmmoInven->GetAmmo(Preset.WeaponKind);
 		}
 	}
 }

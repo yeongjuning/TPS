@@ -24,6 +24,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	virtual void FireAndAttack_Implementation() override;
 
+	UFUNCTION(BlueprintCallable)
+	virtual void StopFireAndAttack_Implementation() override;
+
 public:
 	virtual void Tick(float DeltaSeconds) override;
 };

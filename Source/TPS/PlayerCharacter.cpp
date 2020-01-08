@@ -50,7 +50,14 @@ void ATPSCharacter::PullOutWeapon(int32 SlotIdx, AWeaponBase* WeaponActor)
 		EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
 
 	WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Socket_Hand_R"));
+	
 	SetCurrentWeaponSlot(SlotIdx);
+	SetCurrentWeaponState(SlotIdx);
+
+	if (bIsRifle)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Rifle True"));
+	}
 
 	EquipedWeapons[SlotIdx]->Instigator = this;
 	OnChangeCurrentWeapon.Broadcast(WeaponActor, SlotIdx);
@@ -93,12 +100,15 @@ void ATPSCharacter::AttachWeaponActor(int32 SlotIdx, AWeaponBase* WeaponActor)
 	switch (SlotIdx)
 	{
 	case 0:
+		bIsRifle = false;
 		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Rifle_Socket"));
 		break;
 	case 1:
+		bIsKnife = false;
 		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Knife_Socket"));
 		break;
 	case 2:
+		bIsGrenade = false;
 		WeaponActor->AttachToComponent(GetMesh(), AttachmentRule, TEXT("Grenade_Socket"));
 		break;
 	default:
@@ -109,6 +119,11 @@ void ATPSCharacter::AttachWeaponActor(int32 SlotIdx, AWeaponBase* WeaponActor)
 void APlayerCharacter::Attack_Implementation()
 {
 	Super::Attack_Implementation();
+}
+
+void APlayerCharacter::StopAttack_Implementation()
+{
+	Super::StopAttack_Implementation();
 }
 
 void APlayerCharacter::Reload_Implementation()

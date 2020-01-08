@@ -75,9 +75,8 @@ protected:
 	UFUNCTION()
 	void Attack();
 
-	//UFUNCTION()
-	//void StopAttack();
-
+	UFUNCTION()
+	void StopAttack();
 protected:
 
 	UFUNCTION(BlueprintCallable)

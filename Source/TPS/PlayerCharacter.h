@@ -29,6 +29,9 @@ protected:
 	virtual void Attack_Implementation() override;
 
 	UFUNCTION(BlueprintCallable)
+	virtual void StopAttack_Implementation() override;
+
+	UFUNCTION(BlueprintCallable)
 	virtual void Reload_Implementation() override;
 
 	UFUNCTION(BlueprintCallable)

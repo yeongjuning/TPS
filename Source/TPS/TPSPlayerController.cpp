@@ -87,15 +87,13 @@ void ATPSPlayerController::Attack()
 	GetTPSPlayer()->Attack();
 }
 
-//void ATPSPlayerController::StopAttack()
-//{
-//	IsPlaying();
-//	DoesPlayerExist();
-//
-//	UE_LOG(LogTemp, Log, TEXT("Stop Attack"));
-//
-//	GetAttackComponent()->bAttack = false;
-//}
+void ATPSPlayerController::StopAttack()
+{
+	IsPlaying();
+	DoesPlayerExist();
+
+	GetTPSPlayer()->StopAttack();
+}
 
 void ATPSPlayerController::PullOutRifle()
 {
@@ -200,18 +198,15 @@ void ATPSPlayerController::BeginPlay()
 
 	InputComponent->BindAction(TEXT("Attack"),
 		EInputEvent::IE_Pressed, this, &ATPSPlayerController::Attack);
-	//InputComponent->BindAction(TEXT("StopAttack"),
-	//	EInputEvent::IE_Released, this, &ATPSPlayerController::StopAttack);
+	InputComponent->BindAction(TEXT("StopAttack"),
+		EInputEvent::IE_Released, this, &ATPSPlayerController::StopAttack);
 
 	InputComponent->BindAction(TEXT("PullOutRifle"),
 		EInputEvent::IE_Pressed, this, &ATPSPlayerController::PullOutRifle);
-
 	InputComponent->BindAction(TEXT("PullOutKnife"),
 		EInputEvent::IE_Pressed, this, &ATPSPlayerController::PullOutKnife);
-
 	InputComponent->BindAction(TEXT("PullOutGreande"),
 		EInputEvent::IE_Pressed, this, &ATPSPlayerController::PullOutGrenade);
-
 	InputComponent->BindAction(TEXT("ReapWeapon"),
 		EInputEvent::IE_Pressed, this, &ATPSPlayerController::ReapWeapon);
 

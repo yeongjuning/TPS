@@ -25,6 +25,11 @@ void ARifle::FireAndAttack_Implementation()
 	Super::FireAndAttack_Implementation();
 }
 
+void ARifle::StopFireAndAttack_Implementation()
+{
+	Super::StopFireAndAttack_Implementation();
+}
+
 void ARifle::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);

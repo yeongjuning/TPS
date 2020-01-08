@@ -26,6 +26,11 @@ void AGrenade::FireAndAttack_Implementation()
 	Super::FireAndAttack_Implementation();
 }
 
+void AGrenade::StopFireAndAttack_Implementation()
+{
+	Super::StopFireAndAttack_Implementation();
+}
+
 void AGrenade::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);

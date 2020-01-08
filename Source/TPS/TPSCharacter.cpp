@@ -21,6 +21,27 @@ ATPSCharacter::ATPSCharacter()
 	Weapon = nullptr;
 }
 
+void ATPSCharacter::SetCurrentWeaponState(int32 SlotIdx)
+{
+	if (EquipedWeapons.IsValidIndex(SlotIdx) == false)
+		return;
+
+	switch (SlotIdx)
+	{
+	case 0:
+		bIsRifle = true;
+		break;
+	case 1:
+		bIsKnife = true;
+		break;
+	case 2:
+		bIsGrenade = true;
+		break;
+	default:
+		break;
+	}
+}
+
 void ATPSCharacter::SetCurrentWeaponSlot(int32 SlotIdx)
 {
 	if (EquipedWeapons.IsValidIndex(SlotIdx) == false)
@@ -75,7 +96,12 @@ FName ATPSCharacter::GetEquipedWeaponIds(int32 WeaponIdsIndex, int32 SlotIdx) co
 
 void ATPSCharacter::Attack_Implementation()
 {
-	AttackComponent->Attacking();
+	AttackComponent->Attack();
+}
+
+void ATPSCharacter::StopAttack_Implementation()
+{
+	AttackComponent->StopAttack();
 }
 
 void ATPSCharacter::Reload_Implementation()

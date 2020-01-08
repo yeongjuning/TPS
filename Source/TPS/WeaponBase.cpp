@@ -18,6 +18,11 @@ void AWeaponBase::FireAndAttack_Implementation()
 	UE_LOG(LogTemp, Log, TEXT("Fire And Attack"));
 }
 
+void AWeaponBase::StopFireAndAttack_Implementation()
+{
+	UE_LOG(LogTemp, Log, TEXT("Stop Fire And Attack"));
+}
+
 bool AWeaponBase::IsEquippedWeapon(int32 Slot)
 {
 	if (IsValid(TPSPlayerCharacter->EquipedWeapons[Slot]))
@@ -33,6 +38,7 @@ void AWeaponBase::BeginPlay()
 
 	TPSGameInstance = Cast<UTPSGameInstance>(GetWorld()->GetGameInstance());
 	TPSPlayerCharacter = Cast<ATPSCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	
 	AmmoInven = TPSGameInstance->GetAmmoInventory();
 }
 

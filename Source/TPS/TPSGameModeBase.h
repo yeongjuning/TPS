@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 SpawnIndex = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 WeaponAmmo = 0;
+
 public:
 
 	TArray<FTransform> RandTransform;

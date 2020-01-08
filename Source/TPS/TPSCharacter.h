@@ -39,6 +39,15 @@ public:
 	// Sets default values for this character's properties
 	ATPSCharacter();
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bIsRifle = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bIsKnife = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bIsGrenade = false;
+
+public:
+
 	UFUNCTION(BlueprintCallable)
 	void EquipWeapon(int32 SlotIdx, AWeaponBase* WeaponActor);
 
@@ -52,6 +61,9 @@ public:
 	void DropWeapon(int32 SlotIdx);
 
 public:	// Weapon의 Slot과 관련된 함수 
+
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentWeaponState(int32 SlotIdx);
 
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentWeaponSlot(int32 SlotIdx);
@@ -86,6 +98,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Attack();
 	virtual void Attack_Implementation();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void StopAttack();
+	virtual void StopAttack_Implementation();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Reload();

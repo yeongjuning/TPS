@@ -24,6 +24,11 @@ void AKnife::FireAndAttack_Implementation()
 	Super::FireAndAttack_Implementation();
 }
 
+void AKnife::StopFireAndAttack_Implementation()
+{
+	Super::StopFireAndAttack_Implementation();
+}
+
 void AKnife::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
