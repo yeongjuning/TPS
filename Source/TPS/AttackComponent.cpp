@@ -18,37 +18,39 @@ UAttackComponent::UAttackComponent()
 void UAttackComponent::StartReload()
 {
 	AWeaponBase* Weapon = PlayerCharacter->GetCurrentWeapon();
-	AAmmoInventory* AmmoInven = Cast<AAmmoInventory>(AAmmoInventory::StaticClass());
 
 	if (IsValid(Weapon) == false)
 		return;
 
-	if (Weapon->Magazine >= Weapon->WeaponPreset.MagazineCount)
+	if (Weapon->WeaponPreset.MagazineCount <= 0)
 		return;
 
-	if (AmmoInven->GetAmmo(Weapon->WeaponPreset.WeaponKind) <= 0)
+	if (AmmoIsAtMaximum(Weapon))
 		return;
 
 	bReloading = true;
-	OnStartReload.Broadcast();
+	
+	GetWorld()->GetTimerManager().SetTimer(WaitReloadTimer, this, &UAttackComponent::OnWaitReloadTimerComplete, 1.985f, false);
 	UE_LOG(LogTemp, Log, TEXT("Start Reload"));
 }
 
 void UAttackComponent::CompleteReload()
 {
-	bReloading = false;
-	
 	AWeaponBase* Weapon = PlayerCharacter->GetCurrentWeapon();
-	AAmmoInventory* AmmoInven = Cast<AAmmoInventory>(AAmmoInventory::StaticClass());
+	int32 MagazineCount = Weapon->WeaponPreset.MagazineCount;
 
-	if (IsValid(Weapon) == false)
-		return;
+	Weapon->AmmoInven->AddAmmo(Weapon->WeaponPreset.WeaponKind, MagazineCount * 30);
+	MagazineCount--;
+	UE_LOG(LogTemp, Log, TEXT("MagazineCount : %d"), MagazineCount);
 
-	Weapon->Magazine = AmmoInven->ConsumeAmmo(Weapon->WeaponPreset.WeaponKind, Weapon->WeaponPreset.MagazineCount);
-
-	OnCompleteReload.Broadcast();
+	bReloading = false;
 
 	UE_LOG(LogTemp, Log, TEXT("Completed Reload"));
+}
+
+void UAttackComponent::OnWaitReloadTimerComplete()
+{
+	CompleteReload();
 }
 
 void UAttackComponent::Attack()
@@ -78,10 +80,22 @@ void UAttackComponent::StopAttack()
 	UE_LOG(LogTemp, Log, TEXT("Stop Attack"));
 }
 
-void UAttackComponent::OnWaitAttackTimerEnd()
+bool UAttackComponent::AmmoIsAtMaximum(AWeaponBase* CurrentWeapon)
 {
-	StopAttack();
+	AAmmoInventory* AmmoInven = CurrentWeapon->AmmoInven;
+
+	int32 CurrentAmmo = AmmoInven->GetAmmo(CurrentWeapon->WeaponPreset.WeaponKind);
+	int32 MaxAmmo = AmmoInven->GetMaxAmmo(int32(CurrentWeapon->WeaponPreset.WeaponKind));
+
+	if (CurrentAmmo >= MaxAmmo)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Current Ammo : %d 이므로 Reload할 필요가 없음"), CurrentAmmo);
+		return true;
+	}
+
+	return false;
 }
+
 
 // Called when the game starts
 void UAttackComponent::BeginPlay()

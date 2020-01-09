@@ -47,7 +47,7 @@ public:
 	// 탄환을 소비하여 장전할 수 있는 탄환 수를 반환
 	// MagazineCount보다 적은 탄환 수가 남아있다면 남은 만큼 반환
 	UFUNCTION(BlueprintCallable)
-	int32 ConsumeAmmo(EWeaponKind WeaponKind, int32 MagazineCount);
+	int32 ConsumeAmmo(EWeaponKind WeaponKind, int32 ConsumeCount);
 
 protected:
 

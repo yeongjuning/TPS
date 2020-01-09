@@ -12,9 +12,6 @@
 
 class ATPSCharacter;
 
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReloadSignature);
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TPS_API UAttackComponent : public USceneComponent
 {
@@ -22,12 +19,6 @@ class TPS_API UAttackComponent : public USceneComponent
 
 public:
 	static const int32 MaxWeaponSlot;
-
-	UPROPERTY(BlueprintAssignable)
-	FReloadSignature OnStartReload;
-
-	UPROPERTY(BlueprintAssignable)
-	FReloadSignature OnCompleteReload;
 
 	//// 무기가 변경될 때 마다 변경될 애니매이션
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
@@ -65,9 +56,10 @@ public:
 
 protected:
 
-	FTimerHandle WaitAttackTimer;
+	FTimerHandle WaitReloadTimer;
 
-	void OnWaitAttackTimerEnd();
+	UFUNCTION(BlueprintCallable)
+	void OnWaitReloadTimerComplete();
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -81,6 +73,9 @@ private:
 	ATPSGameModeBase* TPSGameMode;
 
 private:
+
+	UFUNCTION(BlueprintCallable)
+	bool AmmoIsAtMaximum(AWeaponBase* CurrentWeapon);
 
 	UPROPERTY(VisibleAnywhere, BlueprintGetter = IsAttacking)
 	bool bCanAttack = false;

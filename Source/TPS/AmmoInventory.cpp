@@ -77,7 +77,7 @@ void AAmmoInventory::AddAmmo(EWeaponKind WeaponKind, int32 AddAmmo)
 		AmmoInventory[WeaponKind] += AddAmmo;
 }
 
-int32 AAmmoInventory::ConsumeAmmo(EWeaponKind WeaponKind, int32 MagazineCount)
+int32 AAmmoInventory::ConsumeAmmo(EWeaponKind WeaponKind, int32 ConsumeCount)
 {
 	if (AmmoInventory.Contains(WeaponKind) == false)
 		return 0;
@@ -85,7 +85,7 @@ int32 AAmmoInventory::ConsumeAmmo(EWeaponKind WeaponKind, int32 MagazineCount)
 	if (WeaponKind == EWeaponKind::Knife)
 		return 0;
 	
-	int Ammo = FMath::Min(AmmoInventory[WeaponKind], MagazineCount);
+	int Ammo = FMath::Min(AmmoInventory[WeaponKind], ConsumeCount);
 	AmmoInventory[WeaponKind] -= Ammo;
 
 	return Ammo;
